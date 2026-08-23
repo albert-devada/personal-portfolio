@@ -5,11 +5,7 @@ export const dynamic = "force-dynamic";
 
 const API_CONFIG = {
     version: authors.mainAuthor.version,
-    author: {
-        name: authors.mainAuthor.nickname,
-        github: authors.mainAuthor.github,
-        linkedin: authors.mainAuthor.linkedin,
-    },
+    author: { name: authors.mainAuthor.nickname, github: authors.mainAuthor.github, instagram: authors.mainAuthor.instagram, linkedin: authors.mainAuthor.linkedin },
 };
 
 function getApiBaseUrl(request: NextRequest): string {
@@ -39,7 +35,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(
         {
             success: true,
-            message: "Welcome to Albert Devada API Service",
+            message: "Welcome to Albert Devada Public API Service for Developers",
             meta: API_CONFIG,
             endpoints: [
                 { name: "System Health", url: `${baseUrl}/health`, path: `${baseUrl}/health`, method: "GET" },
