@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Geist_Mono, Inter } from "next/font/google";
 import { MetadataConstants } from "@/common/constants/metadata";
 import { ThemeProvider } from "@/theme/themeProvider";
@@ -163,6 +164,7 @@ export default function RootLayout({children}: Readonly<{children: React.ReactNo
             <body className={cn(geistMono.variable, inter.variable, "antialiased min-h-screen", "bg-sky-100 text-slate-900", "dark:bg-[#0f172a] dark:text-slate-50")}>
                 <JsonLdScript />
                 <Analytics />
+                <SpeedInsights />
                 <ThemeProvider>
                     <AnimatedBackground />
                     <LoadingScreen />
