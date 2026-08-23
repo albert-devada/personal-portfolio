@@ -3,16 +3,16 @@
 import Link from "next/link";
 import Image from "next/image";
 
-import { MediaSocials } from "@/lib/profile";
-import { MetadataConstants } from "@/common/constants/metadata";
-import { LanguageText } from "@/language/languageTranslate";
+import { MediaSocials } from "@/lib";
+import { LanguageText } from "@/language";
+import { MetadataConstants } from "@/common/constants";
 import { Terminal, Heart, Coffee } from "lucide-react";
 
 interface FooterProps {
     coverSrc?: string;
 }
 
-export default function MainFooter({ coverSrc = "/cover.gif" }: FooterProps) {
+export function MainFooter({ coverSrc = "/cover.gif" }: FooterProps) {
     const currentYear = new Date().getFullYear();
 
     return (

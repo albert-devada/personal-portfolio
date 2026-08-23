@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { navigationMenu } from "@/lib/navigation";
-import { MusicWidget } from "@/widget/musicWidget"; 
+import { MusicWidget } from "@/widget";
+import { navigationMenu } from "@/lib";
 
 interface MobileDockProps {
     pathname: string;

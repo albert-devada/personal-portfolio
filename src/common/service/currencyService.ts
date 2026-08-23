@@ -1,4 +1,4 @@
-import { BaseMarketItem } from "@/common/types/playgorund";
+import { BaseMarketItem } from "@/common/types";
 
 interface SingleDayRates {
     AUD: number;

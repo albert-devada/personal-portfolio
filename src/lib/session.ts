@@ -1,4 +1,3 @@
-// lib/session.ts
 import { cookies } from "next/headers";
 
 export interface PortfolioSessionPayload {

@@ -3,14 +3,13 @@
 import { ChevronRight } from "lucide-react";
 import { appToast } from "./sonnerProvider";
 import { ShimmerButton } from "./shimmerButton";
-import { LanguageText } from "@/language/languageTranslate";
-import { useLanguage } from "@/language/languageProvider";
+import { useLanguage, LanguageText } from "@/language";
 
 interface ResumeButtonProps {
     portfolioUrl: string | null | undefined;
 }
 
-export default function ResumeDowload({ portfolioUrl }: ResumeButtonProps) {
+export function ResumeDowload({ portfolioUrl }: ResumeButtonProps) {
     const { lang } = useLanguage();
 
     const handleAlert = () => {

@@ -1,5 +1,5 @@
 import React from "react";
-import { useLanguage } from "@/language/languageProvider";
+import { useLanguage } from "@/language";
 
 export const HelpOutput: React.FC = () => {
     const { lang } = useLanguage();

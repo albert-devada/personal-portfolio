@@ -1,7 +1,7 @@
+import Image from "next/image";
+import { Typography } from "@/theme";
 import { Avatar } from "./avatarsProfile";
 import { MdVerified as VerifiedIcon } from "react-icons/md";
-import Image from "next/image";
-import Typography from "@/theme/typography";
 
 interface ProfileProps {
     avatars?: string | null;
@@ -9,7 +9,7 @@ interface ProfileProps {
     username?: string | null;
 }
 
-export default function DisplayProfile({ avatars, name, username }: ProfileProps) {
+export function DisplayProfile({ avatars, name, username }: ProfileProps) {
 
     const getAvatarSrc = (src: string | null | undefined): string => {
         if (!src) return "/assets/avatar.jpeg";

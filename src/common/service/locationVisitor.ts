@@ -1,5 +1,5 @@
 import { cookies, headers } from "next/headers";
-import { GeoLocationData, VisitorDetails } from "@/lib/utils";
+import { GeoLocationData, VisitorDetails } from "@/lib";
 
 export async function getVisitorDetails(fetchGeo = false): Promise<VisitorDetails> {
     let ipAddress = "127.0.0.1";

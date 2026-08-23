@@ -1,22 +1,15 @@
+import { cn } from "@/lib";
+import Script from "next/script"
 import type { Metadata } from "next";
 import { Analytics } from "@vercel/analytics/react";
-import { SpeedInsights } from "@vercel/speed-insights/next";
+import { SidebarMain, MainFooter } from "@/partial";
 import { Geist_Mono, Inter } from "next/font/google";
-import { MetadataConstants } from "@/common/constants/metadata";
-import { ThemeProvider } from "@/theme/themeProvider";
-import { ThemeToggle } from "@/theme/themeToggle";
-import { LanguageProvider } from "@/language/languageProvider";
-import { LanguageToggle } from "@/language/languageToggle";
-import { cn } from "@/lib/utils";
-import { ToasterProvider } from "@/components/sonnerProvider";
+import { MetadataConstants } from "@/common/constants";
+import { SpeedInsights } from "@vercel/speed-insights/next";
+import { LanguageProvider, LanguageToggle } from "@/language";
+import { AnimatedBackground, ThemeProvider, ThemeToggle } from "@/theme";
+import { ToasterProvider, ScrollProgress, ScrollToTopButton, LoadingScreen } from "@/components";
 
-import Script from "next/script"
-import AnimatedBackground from "@/theme/animatedBackground";
-import ScrollProgress from "@/components/scrollProgress";
-import ScrollToTopButton from "@/components/topBotton";
-import SidebarMain from "@/partial/sidebarMain";
-import MainFooter from "@/partial/mainFooter";
-import LoadingScreen from "@/components/loadingScreen";
 import "./globals.css";
 
 const geistMono = Geist_Mono({
@@ -32,7 +25,7 @@ const ogImage = MetadataConstants.preview || "/preview.png";
 
 export const metadata: Metadata = {
     title: {
-        default: `${MetadataConstants.exTitle} | Cybersecurity & Backend Enthusiast`,
+        default: `${MetadataConstants.exTitle} Portfolio | Cybersecurity & Backend Enthusiast`,
         template: `%s | ${MetadataConstants.exTitle}`,
     },
     metadataBase: new URL(process.env.NODE_ENV === "development" ? "http://localhost:3000" : process.env.APP_DOMAIN ?? "http://localhost:3000"),
@@ -45,6 +38,11 @@ export const metadata: Metadata = {
             url: MetadataConstants.authors.url,
         },
     ],
+    icons: {
+        icon: "/favicon.ico",
+        shortcut: "/favicon.ico",
+        apple: "/favicon.ico",
+    },
     openGraph: {
         title: `Portfolio ${MetadataConstants.exTitle}`,
         description: MetadataConstants.description,
@@ -83,7 +81,7 @@ export const metadata: Metadata = {
     abstract: MetadataConstants.description,
     category: "Portfolio & Cybersecurity Utilities",
     alternates: {
-        canonical: "/",
+        canonical: "./",
         types: {
             "application/rss+xml": "/feed.xml",
         },

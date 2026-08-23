@@ -1,18 +1,13 @@
-import { getPersonalProfile } from '@/common/supabase/client';
-import { MediaSocials } from "@/lib/profile";
-import { LanguageText, LanguageBlurFadeText } from "@/language/languageTranslate";
-import { MapPin, Brain, ArrowRight, ArrowUpRight } from "lucide-react";
-import { getVisitorDetails } from "@/common/service/locationVisitor";
-import { TypingAnimation } from "@/components/typingAnimation";
-import { InteractiveHoverButton } from "@/components/interactiveButton";
-import { BlurFade } from "@/components/blurFade";
 import Link from "next/link";
-import ResumeButton from "@/components/resumeButton";
-import DisplayProfile from "@/partial/displayProfile";
-import TerminalWidget from "@/widget/terminalWiget";
-import CertificationSection from "@/widget/certificateWidget";
-import ExperienceSection from "@/widget/experienceWidget";
-import WorkSection from "@/widget/workingWiget";
+import { MediaSocials } from "@/lib";
+import { DisplayProfile } from "@/partial";
+import { getVisitorDetails } from "@/common/service";
+import { getPersonalProfile } from '@/common/supabase';
+import { TerminalWidget, WorkSection } from "@/widget";
+import { LanguageText, LanguageBlurFadeText } from "@/language";
+import { CertificateCourses, ProjectExperience } from "@/contents";
+import { MapPin, Brain, ArrowRight, ArrowUpRight } from "lucide-react";
+import { BlurFade, ResumeDowload, TypingAnimation, InteractiveHoverButton } from "@/components";
 
 const BLUR_FADE_DELAY = 0.03;
 export const dynamic = "force-dynamic";
@@ -92,7 +87,7 @@ export default async function Home() {
                             </div>
                             <div className="shrink-0 w-full min-[480px]:w-auto mt-1 min-[480px]:mt-0">
                                 <BlurFade delay={BLUR_FADE_DELAY * 3} direction="left" className="w-full">
-                                    <ResumeButton portfolioUrl={profile.portfolio_url} />
+                                    <ResumeDowload portfolioUrl={profile.portfolio_url} />
                                 </BlurFade>
                             </div>
                         </div>
@@ -102,13 +97,13 @@ export default async function Home() {
                     <TerminalWidget visitorIp={ipAddress} geoData={GeoLocationData} />
                 </BlurFade>
                 <BlurFade delay={BLUR_FADE_DELAY * 6}>
-                    <CertificationSection />
+                    <CertificateCourses />
                 </BlurFade>
                 <BlurFade delay={BLUR_FADE_DELAY * 8}>
                     <WorkSection />
                 </BlurFade>
                 <BlurFade delay={BLUR_FADE_DELAY * 7}>
-                    <ExperienceSection />
+                    <ProjectExperience />
                 </BlurFade>
             </div>
         </div>

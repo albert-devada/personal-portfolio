@@ -1,4 +1,4 @@
-import { CVEDataItem, CVEApiResponse, CVEMetrics } from "@/common/types/playgorund";
+import { CVEDataItem, CVEApiResponse, CVEMetrics } from "@/common/types";
 
 function get24HoursRangeISO(): { pubStartDate: string; pubEndDate: string } {
     const endDate = new Date();

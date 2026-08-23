@@ -1,23 +1,22 @@
-import { getVisitorDetails } from "@/common/service/locationVisitor";
+import type { Metadata } from "next";
+import { MacWindow } from "@/partial";
 import { Terminal } from "lucide-react";
-import { Tabs, TabsContent } from "@/components/containerTabs";
-import { BlurFade } from "@/components/blurFade";
-import { MacWindow } from "@/partial/macWindow";
-import { LanguageText } from "@/language/languageTranslate";
-import type { ToolTab } from "@/common/types/playgorund";
-
-import ToolsMenu from "@/navigation/toolsMenu";
-import TabGeolocation from "@/tools/tabGeolocation";
-import TabCveTracker from "@/tools/tabCveTracker";
-import TabExploitedVulns from "@/tools/tabExploitedVulns";
-import TabBreachCheck from "@/tools/tabBreachCheck";
-import TabJsonFormatter from "@/tools/tabJsonFormatter";
-import TabEncoder from "@/tools/tabEncoder";
-import TabMarketWatch from "@/tools/tabMarketWatch";
-import TabExchangeRate from "@/tools/tabExchangeRate";
-import TabServerStatus from "@/tools/tabServerStatus";
+import { ToolsMenu } from "@/navigation";
+import { LanguageText } from "@/language";
+import type { ToolTab } from "@/common/types";
+import { getVisitorDetails } from "@/common/service";
+import { BlurFade, Tabs, TabsContent } from "@/components";
+import { TabGeolocation, TabCveTracker, TabExploitedVulns, TabBreachCheck, TabJsonFormatter, TabEncoder, TabMarketWatch, TabExchangeRate, TabServerStatus } from "@/tools";
 
 export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = {
+    title: "Playground",
+    description: "Free interactive tools including CVE Tracker, CISA Exploited Vulnerabilities, Email Data Leak, IP Geolocation, and JSON Formatter.",
+    alternates: {
+        canonical: "/playground",
+    },
+};
 
 interface PageProps {
     searchParams: Promise<{ tab?: string }>;

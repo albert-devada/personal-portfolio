@@ -1,18 +1,14 @@
 "use client";
 
-import { Badge } from "@/components/badge";
-import { ArrowDown, ArrowUpRight } from "lucide-react";
-import { useState, useEffect } from "react";
-import { getExperienceList } from '@/common/supabase/client';
-import { Timeline, TimelineItem, TimelineConnectItem } from "@/components/timeLine";
-import { BlurFade } from "@/components/blurFade";
-import { LanguageText, LanguageBlurFadeText } from "@/language/languageTranslate";
-import { GitHubLogoIcon, GlobeIcon } from "@radix-ui/react-icons"; 
-import { SiYoutube } from "react-icons/si";
-
-import Image from "next/image";
 import Link from "next/link";
-import BlurFadeText from "@/components/blurFadeText";
+import Image from "next/image";
+import { SiYoutube } from "react-icons/si";
+import { useState, useEffect } from "react";
+import { getExperienceList } from '@/common/supabase';
+import { ArrowDown, ArrowUpRight } from "lucide-react";
+import { LanguageText, LanguageBlurFadeText } from "@/language";
+import { GitHubLogoIcon, GlobeIcon } from "@radix-ui/react-icons";
+import { Timeline, TimelineItem, TimelineConnectItem, Badge, BlurFade, BlurFadeText } from "@/components";
 
 function formatReleasedDate(dateString: string, lang: "en" | "id" = "en"): string {
     if (!dateString) return "";
@@ -92,14 +88,14 @@ function getLinkIcon(title: string) {
     return GlobeIcon;
 }
 
-type ExperienceItem = Record<string, string | number | boolean | null | undefined>;
+type ProjectExperienceItem = Record<string, string | number | boolean | null | undefined>;
 
-interface ExperienceSectionProps {
+interface ProjectExperienceProps {
     isFullPage?: boolean;
 }
 
-export default function ExperienceSection({ isFullPage = false }: ExperienceSectionProps) {
-    const [experiences, setExperiences] = useState<ExperienceItem[]>([]);
+export function ProjectExperience({ isFullPage = false }: ProjectExperienceProps) {
+    const [experiences, setExperiences] = useState<ProjectExperienceItem[]>([]);
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {

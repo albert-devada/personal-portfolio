@@ -1,10 +1,8 @@
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/containerTabs";
 import { Activity } from "lucide-react";
-import { BlurFade } from "@/components/blurFade";
-import { LanguageBlurFadeText } from "@/language/languageTranslate";
-import { BoxCardGrid } from "@/partial/boxCardGrid";
-import { NewsCardList } from "@/partial/newsCardList";
-import { TabMarket } from "@/common/types/playgorund";
+import { TabMarket } from "@/common/types";
+import { LanguageBlurFadeText } from "@/language";
+import { BoxCardGrid, NewsCardList } from "@/partial";
+import { BlurFade, Tabs, TabsContent, TabsList, TabsTrigger } from "@/components";
 
 const BLUR_FADE_DELAY = 0.04;
 

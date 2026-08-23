@@ -1,8 +1,7 @@
+import { authors } from "@/common/constants";
 import { NextRequest, NextResponse } from "next/server";
-import { VerifedSession } from "@/lib/session";
-import { VerifedTurnstileToken } from "@/lib/turnstile";
-import { fetchExploitedSearch } from "@/common/service/exploitedService";
-import { authors } from "@/common/constants/author";
+import { fetchExploitedSearch } from "@/common/service";
+import { VerifedSession, VerifedTurnstileToken } from "@/lib/server";
 
 export const dynamic = "force-dynamic";
 

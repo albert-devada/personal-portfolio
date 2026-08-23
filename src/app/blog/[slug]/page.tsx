@@ -1,28 +1,16 @@
 "use client";
-
-import { use, useState, useEffect } from "react";
-import { toast } from "sonner";
-import { getBlogBySlug, getPersonalProfile } from "@/common/supabase/client";
-import { useLanguage } from "@/language/languageProvider";
-import { LanguageText } from "@/language/languageTranslate";
-import { MdVerified as VerifiedIcon } from "react-icons/md";
-import { BlurFade } from "@/components/blurFade";
-import {
-    ChevronLeft,
-    Calendar,
-    Sparkles,
-    BookOpen,
-    ArrowLeft,
-    ExternalLink,
-    Share2,
-    Check,
-    MessageCircle
-} from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
-import ReactMarkdown from "react-markdown";
+import { toast } from "sonner";
 import remarkGfm from "remark-gfm";
+import { BlurFade } from "@/components";
+import ReactMarkdown from "react-markdown";
 import rehypeHighlight from "rehype-highlight";
+import { use, useState, useEffect } from "react";
+import { useLanguage, LanguageText } from "@/language";
+import { MdVerified as VerifiedIcon } from "react-icons/md";
+import { getBlogBySlug, getPersonalProfile } from "@/common/supabase";
+import { ChevronLeft, Calendar, Sparkles, BookOpen, ArrowLeft, ExternalLink, Share2, Check, MessageCircle } from "lucide-react";
 import "highlight.js/styles/github-dark.css";
 
 interface ProfileItem {

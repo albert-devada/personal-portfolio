@@ -1,18 +1,21 @@
 "use client";
 
-import { getApiUrl } from "@/lib/api";
-import { useState, useRef } from "react";
 import Image from "next/image";
+import { getApiUrl } from "@/lib";
+import { useState, useRef } from "react";
+import { BreachItem } from "@/common/types";
+import { BlurFade, appToast, Card, CardContent } from "@/components";
+import { useLanguage, LanguageText, LanguageBlurFadeText } from "@/language";
 import { Turnstile, type TurnstileInstance } from "@marsidev/react-turnstile";
-import { 
-    ShieldAlert, 
-    ShieldCheck, 
-    Search, 
-    Database, 
-    Calendar, 
-    Hash, 
-    Layers, 
-    CheckCircle2, 
+import {
+    ShieldAlert,
+    ShieldCheck,
+    Search,
+    Database,
+    Calendar,
+    Hash,
+    Layers,
+    CheckCircle2,
     AlertTriangle,
     ExternalLink,
     Building2,
@@ -20,17 +23,11 @@ import {
     ChevronDown,
     ChevronUp
 } from "lucide-react";
-import { appToast } from "@/components/sonnerProvider";
-import { BreachItem } from "@/common/types/playgorund";
-import { Card, CardContent } from "@/components/containerCard";
-import { BlurFade } from "@/components/blurFade";
-import { LanguageText, LanguageBlurFadeText } from "@/language/languageTranslate";
-import { useLanguage } from "@/language/languageProvider";
 
 const INITIAL_DISPLAY_COUNT = 5;
 const BLUR_FADE_DELAY = 0.04;
 
-export default function TabBreachCheck() {
+export function TabBreachCheck() {
     const { lang } = useLanguage();
     const [email, setEmail] = useState("");
     const [turnstileToken, setTurnstileToken] = useState<string | null>(null);

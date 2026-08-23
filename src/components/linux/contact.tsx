@@ -1,6 +1,6 @@
 import React from "react";
-import { MediaSocials } from "@/lib/profile";
-import { useLanguage } from "@/language/languageProvider";
+import { MediaSocials } from "@/lib";
+import { useLanguage } from "@/language";
 
 export const ContactOutput: React.FC = () => {
     const { lang } = useLanguage();

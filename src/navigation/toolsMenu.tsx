@@ -1,16 +1,15 @@
 "use client";
 
 import Link from "next/link";
-import type { ToolTab } from "@/common/types/playgorund";
-import { cn } from "@/lib/utils";
-import { GROUPED_TOOLS } from "@/lib/menutools";
-import { useLanguage } from "@/language/languageProvider";
+import { useLanguage } from "@/language";
+import { cn, GROUPED_TOOLS } from "@/lib";
+import type { ToolTab } from "@/common/types";
 
 interface ToolsMenuProps {
     activeTab: ToolTab;
 }
 
-export default function ToolsMenu({ activeTab }: ToolsMenuProps) {
+export function ToolsMenu({ activeTab }: ToolsMenuProps) {
     const { lang } = useLanguage();
 
     return (

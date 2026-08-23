@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
 import { useTheme } from "next-themes";
+import { startGlobalPlay } from "@/widget";
+import { useEffect, useState } from "react";
 import { Music, Volume2 } from "lucide-react";
-import { startGlobalPlay } from "@/widget/musicWidget";
+import { AnimatePresence, motion } from "framer-motion";
 
 const STATUS_STEPS = [
     "INSTALLING SYSTEM...",
@@ -18,7 +18,7 @@ interface LoadingScreenProps {
     theme?: "dark" | "light";
 }
 
-export default function LoadingScreen({ theme }: LoadingScreenProps) {
+export function LoadingScreen({ theme }: LoadingScreenProps) {
     const { resolvedTheme } = useTheme();
     const [mounted, setMounted] = useState(false);
     const [progress, setProgress] = useState(0);

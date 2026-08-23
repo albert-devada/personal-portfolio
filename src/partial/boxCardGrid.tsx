@@ -1,9 +1,8 @@
 import Image from "next/image";
-import { Card, CardContent } from "@/components/containerCard";
+import { BaseMarketItem } from "@/common/types";
+import { LanguageBlurFadeText } from "@/language";
+import { BlurFade, Card, CardContent } from "@/components";
 import { TrendingUp, TrendingDown, Loader2 } from "lucide-react";
-import { BlurFade } from "@/components/blurFade";
-import { LanguageBlurFadeText } from "@/language/languageTranslate";
-import { BaseMarketItem } from "@/common/types/playgorund";
 
 const BLUR_FADE_DELAY = 0.04;
 

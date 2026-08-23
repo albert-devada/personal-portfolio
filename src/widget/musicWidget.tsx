@@ -1,10 +1,10 @@
 "use client";
 
-import { useSyncExternalStore } from "react";
 import Image from "next/image";
-import Typography from "@/theme/typography";
+import { PLAYLIST } from "@/lib";
+import { Typography } from "@/theme";
+import { useSyncExternalStore } from "react";
 import { Play, Pause, SkipBack, SkipForward, Music } from "lucide-react";
-import { PLAYLIST } from "@/lib/playlist";
 
 interface MusicWidgetProps {
     className?: string;

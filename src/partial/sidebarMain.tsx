@@ -1,10 +1,9 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { DesktopMenu } from "@/navigation/desktopMenu";
-import { MobileDock } from "@/navigation/mobileDock";
+import { MobileDock, DesktopMenu } from "@/navigation";
 
-const SidebarMain = () => {
+export function SidebarMain() {
     const pathname = usePathname();
 
     return (
@@ -13,6 +12,4 @@ const SidebarMain = () => {
             <MobileDock pathname={pathname} />
         </>
     );
-};
-
-export default SidebarMain;
+}

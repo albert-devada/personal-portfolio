@@ -1,8 +1,7 @@
+import { authors } from "@/common/constants";
+import { fetchCVESearch } from "@/common/service";
 import { NextRequest, NextResponse } from "next/server";
-import { VerifedSession } from "@/lib/session";
-import { VerifedTurnstileToken } from "@/lib/turnstile";
-import { fetchCVESearch } from "@/common/service/cvedataService";
-import { authors } from "@/common/constants/author";
+import { VerifedSession, VerifedTurnstileToken } from "@/lib/server";
 
 export const dynamic = "force-dynamic";
 const cveId_REGEX = /^CVE-\d{4}-\d{4,}$/i;

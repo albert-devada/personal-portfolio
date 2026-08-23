@@ -1,4 +1,4 @@
-import { NewsArticleItem } from "@/common/types/playgorund";
+import { NewsArticleItem } from "@/common/types";
 
 interface TickerSentiment {
     ticker: string;

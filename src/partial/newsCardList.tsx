@@ -1,11 +1,10 @@
 "use client";
 
 import { useState } from "react";
+import { NewsArticleItem } from "@/common/types";
+import { BlurFade, ProxyImage } from "@/components";
+import { LanguageBlurFadeText, LanguageText } from "@/language";
 import { ArrowUpRight, ChevronDown, ChevronUp, Loader2 } from "lucide-react";
-import { BlurFade } from "@/components/blurFade";
-import { NewsArticleItem } from "@/common/types/playgorund";
-import { LanguageBlurFadeText, LanguageText } from "@/language/languageTranslate";
-import { ProxyImage } from "@/components/proxyImage";
 
 interface NewsCardListProps {
     items: NewsArticleItem[];

@@ -1,5 +1,5 @@
 import { supabase } from "./server";
-import { ProfileData } from "@/lib/profile";
+import { ProfileData } from "@/lib";
 
 export async function getPersonalProfile() {
 

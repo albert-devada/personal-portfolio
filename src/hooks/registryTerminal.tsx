@@ -1,14 +1,7 @@
 import React from "react";
-import { getCertificateList } from "@/common/supabase/client";
-import { CommandContext, CommandHandler } from "../types/terminal";
-import { HelpOutput } from "../linux/help";
-import { CertificateMenuOutput, CertificateDetailOutput, formatCertificateData } from "../linux/credentials";
-import { NeofetchOutput } from "../linux/neofetch";
-import { WhoamiOutput } from "../linux/whoami";
-import { IfconfigOutput } from "../linux/ifconfig";
-import { ExperienceOutput } from "../linux/experience";
-import { ContactOutput } from "../linux/contact";
-import { LsOutput } from "../linux/ls";
+import { getCertificateList } from "@/common/supabase";
+import { CommandContext, CommandHandler } from "@/common/types";
+import { HelpOutput, CertificateMenuOutput, CertificateDetailOutput, formatCertificateData, NeofetchOutput, WhoamiOutput, IfconfigOutput, ExperienceOutput, ContactOutput, LsOutput } from "@/components/linux";
 
 const commandMap: Record<string, CommandHandler> = {
     help: (ctx: CommandContext) => {

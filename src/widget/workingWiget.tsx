@@ -1,19 +1,12 @@
 "use client";
 
+import { cn } from "@/lib";
 import Image from "next/image";
 import { useState, useEffect } from "react";
-import {
-    Accordion,
-    AccordionContent,
-    AccordionItem,
-    AccordionTrigger,
-} from "@/components/accordion";
+import { getWorkingList } from "@/common/supabase";
 import { ChevronDown, ChevronRight } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { getWorkingList } from "@/common/supabase/client";
-import { LanguageText, LanguageBlurFadeText } from "@/language/languageTranslate";
-import { BlurFade } from "@/components/blurFade";
-import BlurFadeText from "@/components/blurFadeText";
+import { LanguageText, LanguageBlurFadeText } from "@/language";
+import { BlurFade, BlurFadeText, Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components";
 
 const getLogoSrc = (src: string | null | undefined): string => {
     if (!src) return "/company.png";
@@ -59,7 +52,7 @@ function LogoImage({ src, alt }: { src: string | null | undefined; alt: string }
 
 type WorkingsItem = Record<string, string | number | boolean | null | undefined>;
 
-export default function WorkSection() {
+export function WorkSection() {
     const [workings, setWorkings] = useState<WorkingsItem[]>([]);
     const [isLoading, setIsLoading] = useState(true);
 

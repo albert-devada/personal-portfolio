@@ -1,8 +1,8 @@
 "use client";
 
+import { useLanguage } from "@/language";
+import { getExperienceList } from "@/common/supabase";
 import React, { useEffect, useState, useRef } from "react";
-import { getExperienceList } from "@/common/supabase/client";
-import { useLanguage } from "@/language/languageProvider";
 
 type ExperienceItem = Record<string, string | number | boolean | null | undefined>;
 

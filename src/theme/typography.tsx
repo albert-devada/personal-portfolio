@@ -1,4 +1,4 @@
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib";
 import React from "react";
 
 type TypographyComponent = (() => null) & {
@@ -10,12 +10,12 @@ type TypographyComponent = (() => null) & {
     quote: React.FC<React.ComponentPropsWithoutRef<"blockquote">>;
 };
 
-const Typography: TypographyComponent = () => {
+export const Typography: TypographyComponent = () => {
     return null;
 };
 
 // H1
-const TypographyH1 = ({
+export const TypographyH1 = ({
     children,
     className,
     ...props
@@ -32,10 +32,11 @@ const TypographyH1 = ({
         </h1>
     );
 };
+
 Typography.H1 = TypographyH1;
 
 // H2
-const TypographyH2 = ({
+export const TypographyH2 = ({
     children,
     className,
     ...props
@@ -52,10 +53,11 @@ const TypographyH2 = ({
         </h2>
     );
 };
+
 Typography.H2 = TypographyH2;
 
 // H3
-const TypographyH3 = ({
+export const TypographyH3 = ({
     children,
     className,
     ...props
@@ -72,10 +74,11 @@ const TypographyH3 = ({
         </h3>
     );
 };
+
 Typography.H3 = TypographyH3;
 
 // H4
-const TypographyH4 = ({
+export const TypographyH4 = ({
     children,
     className,
     ...props
@@ -92,10 +95,11 @@ const TypographyH4 = ({
         </h4>
     );
 };
+
 Typography.H4 = TypographyH4;
 
 // Paragraph (P)
-const TypographyP = ({
+export const TypographyP = ({
     children,
     className,
     ...props
@@ -106,10 +110,11 @@ const TypographyP = ({
         </div>
     );
 };
+
 Typography.P = TypographyP;
 
 // Blockquote (quote)
-const TypographyBlockquote = ({
+export const TypographyBlockquote = ({
     children,
     className,
     ...props
@@ -123,6 +128,7 @@ const TypographyBlockquote = ({
         </blockquote>
     );
 };
+
 Typography.quote = TypographyBlockquote;
 
 export default Typography;

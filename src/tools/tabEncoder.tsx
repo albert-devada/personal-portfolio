@@ -1,18 +1,15 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { LanguageText, LanguageBlurFadeText } from "@/language/languageTranslate";
-import { useLanguage } from "@/language/languageProvider";
-import { appToast } from "@/components/sonnerProvider";
-import { BlurFade } from "@/components/blurFade";
-import { Card, CardContent } from "@/components/containerCard";
+import { BlurFade, appToast, Card, CardContent } from "@/components";
 import { Binary, Check, Copy, Trash2, AlertCircle } from "lucide-react";
+import { useLanguage, LanguageText, LanguageBlurFadeText } from "@/language";
 
 type EncodingMode = "base64" | "url";
 type ActionType = "encode" | "decode";
 const BLUR_FADE_DELAY = 0.1;
 
-export default function TabEncoder() {
+export function TabEncoder() {
     const { lang } = useLanguage();
     const [mode, setMode] = useState<EncodingMode>("base64");
     const [action, setAction] = useState<ActionType>("encode");

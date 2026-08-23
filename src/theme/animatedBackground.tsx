@@ -1,8 +1,8 @@
 "use client";
 
 import { useTheme } from "next-themes";
-import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
 
 const DarkMode = ({ isActive }: { isActive: boolean }) => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -231,7 +231,7 @@ const LightMode = ({ isActive }: { isActive: boolean }) => {
     return <canvas ref={canvasRef} className="w-full h-full" />;
 };
 
-export default function AnimatedBackground() {
+export function AnimatedBackground() {
     const { resolvedTheme } = useTheme();
     const [mounted, setMounted] = useState(false);
 

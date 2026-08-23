@@ -2,10 +2,8 @@
 
 import Link from "next/link";
 import { FileQuestion, Home, ArrowLeft } from "lucide-react";
-import { BlurFade } from "@/components/blurFade";
-import { TypingAnimation } from "@/components/typingAnimation";
-import { InteractiveHoverButton } from "@/components/interactiveButton";
-import { LanguageText, LanguageBlurFadeText } from "@/language/languageTranslate";
+import { LanguageText, LanguageBlurFadeText } from "@/language";
+import { BlurFade, TypingAnimation, InteractiveHoverButton } from "@/components";
 
 const BLUR_FADE_DELAY = 0.04;
 

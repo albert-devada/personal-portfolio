@@ -1,4 +1,4 @@
-import { BreachItem } from "@/common/types/playgorund";
+import { BreachItem } from "@/common/types";
 
 interface XposedBreachDetail {
     breach: string;

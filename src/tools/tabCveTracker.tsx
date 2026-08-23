@@ -1,8 +1,12 @@
 "use client";
 
-import React, { useState, useRef, useEffect, useCallback, startTransition } from "react";
+import { getApiUrl } from "@/lib";
+import { CVEDataItem } from "@/common/types";
 import { useSearchParams } from "next/navigation";
+import { BlurFade, appToast, Card, CardContent } from "@/components";
+import { useLanguage, LanguageText, LanguageBlurFadeText } from "@/language";
 import { Turnstile, type TurnstileInstance } from "@marsidev/react-turnstile";
+import React, { useState, useRef, useEffect, useCallback, startTransition } from "react";
 import { 
     Bug, 
     Search, 
@@ -16,13 +20,6 @@ import {
     Shield,
     Tag
 } from "lucide-react";
-import { getApiUrl } from "@/lib/api";
-import { appToast } from "@/components/sonnerProvider";
-import { CVEDataItem } from "@/common/types/playgorund";
-import { Card, CardContent } from "@/components/containerCard";
-import { BlurFade } from "@/components/blurFade";
-import { LanguageText, LanguageBlurFadeText } from "@/language/languageTranslate";
-import { useLanguage } from "@/language/languageProvider";
 
 const INITIAL_DISPLAY_COUNT = 5;
 const BLUR_FADE_DELAY = 0.04;
@@ -57,7 +54,7 @@ const formatCveDate = (dateStr?: string, currentLang: string = "en") => {
     }
 };
 
-export default function TabCveTracker() {
+export function TabCveTracker() {
     const { lang } = useLanguage();
     const searchParams = useSearchParams();
     

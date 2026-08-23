@@ -1,12 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react"; 
-import { getEducationList, getCertificateList } from '@/common/supabase/client';
-import { formatCertificateData } from "@/common/linux/credentials";
-import { useLanguage } from "@/language/languageProvider";
+import { useTerminal } from "@/hooks"
+import { GeoLocationData } from "@/lib";
+import { useLanguage } from "@/language";
+import { useEffect, useState } from "react";
 import { Fira_Code } from "next/font/google";
-import { useTerminal } from "@/common/hooks/useTerminal";
-import { GeoLocationData } from "@/lib/utils";
+import { formatCertificateData } from "@/components/linux";
+import { getEducationList, getCertificateList } from '@/common/supabase';
 
 const firaCode = Fira_Code({
     subsets: ["latin"],
@@ -34,7 +34,7 @@ interface TerminalWidgetProps {
     geoData: GeoLocationData | null;
 }
 
-export default function TerminalWidget({ visitorIp, geoData }: TerminalWidgetProps) {
+export function TerminalWidget({ visitorIp, geoData }: TerminalWidgetProps) {
     const { lang } = useLanguage();
     const [educationList, setEducationList] = useState<EducationItem[]>([]);
     const [isLoadingEdu, setIsLoadingEdu] = useState(true);

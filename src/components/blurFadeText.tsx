@@ -1,8 +1,8 @@
 "use client";
 
-import { cn } from "@/lib/utils";
-import { motion, Variants } from "motion/react";
+import { cn } from "@/lib";
 import { useMemo } from "react";
+import { motion, Variants } from "motion/react";
 
 interface BlurFadeTextProps {
     text: string;
@@ -17,16 +17,8 @@ interface BlurFadeTextProps {
     yOffset?: number;
     animateByCharacter?: boolean;
 }
-const BlurFadeText = ({
-    text,
-    className,
-    variant,
-    duration = 0.4,
-    characterDelay = 0.03,
-    delay = 0,
-    yOffset = 8,
-    animateByCharacter = false,
-}: BlurFadeTextProps) => {
+
+export function BlurFadeText({ text, className, variant, duration = 0.4, characterDelay = 0.03, delay = 0, yOffset = 8, animateByCharacter = false }: BlurFadeTextProps) {
     const defaultVariants: Variants = {
         hidden: { y: -yOffset, opacity: 0, filter: "blur(8px)" },
         visible: { y: 0, opacity: 1, filter: "blur(0px)" },
@@ -88,5 +80,3 @@ const BlurFadeText = ({
         </div>
     );
 };
-
-export default BlurFadeText;

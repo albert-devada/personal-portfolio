@@ -1,8 +1,7 @@
+import { authors } from "@/common/constants";
+import { fetchBreachData } from "@/common/service";
 import { NextRequest, NextResponse } from "next/server";
-import { VerifedSession } from "@/lib/session";
-import { VerifedTurnstileToken } from "@/lib/turnstile";
-import { fetchBreachData } from "@/common/service/breachService";
-import { authors } from "@/common/constants/author";
+import { VerifedSession, VerifedTurnstileToken } from "@/lib/server";
 
 export const dynamic = "force-dynamic";
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

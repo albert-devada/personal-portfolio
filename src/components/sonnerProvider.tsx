@@ -1,7 +1,8 @@
 "use client";
+
+import { useTheme } from "next-themes";
 import { Toaster as SonnerToaster, toast } from "sonner";
 import { ShieldCheck, ShieldAlert, Info } from "lucide-react";
-import { useTheme } from "next-themes";
 
 export const appToast = {
     success: (message: string) => {

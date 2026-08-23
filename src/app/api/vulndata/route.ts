@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
-import { VerifedSession } from "@/lib/session";
-import { fetchExploitedData } from "@/common/service/exploitedService";
-import { authors } from "@/common/constants/author";
+import { authors } from "@/common/constants";
+import { VerifedSession } from "@/lib/server";
+import { fetchExploitedData } from "@/common/service";
 
 export const dynamic = "force-dynamic";
 

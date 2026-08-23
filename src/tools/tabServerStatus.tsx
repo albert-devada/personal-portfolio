@@ -1,7 +1,10 @@
 "use client";
 
-import { getApiUrl } from "@/lib/api";
+import { getApiUrl } from "@/lib";
 import { useState, useEffect, useCallback } from "react";
+import { BlurFade, appToast, Card, CardContent } from "@/components";
+import { HealthResponseData, HealthApiResponse } from "@/common/types";
+import { useLanguage, LanguageText, LanguageBlurFadeText } from "@/language";
 import {
     Server,
     Database,
@@ -16,12 +19,6 @@ import {
     Cpu,
     Radio
 } from "lucide-react";
-import { appToast } from "@/components/sonnerProvider";
-import { Card, CardContent } from "@/components/containerCard";
-import { BlurFade } from "@/components/blurFade";
-import { LanguageText, LanguageBlurFadeText } from "@/language/languageTranslate";
-import { useLanguage } from "@/language/languageProvider";
-import { HealthResponseData, HealthApiResponse } from "@/common/types/playgorund";
 
 const BLUR_FADE_DELAY = 0.04;
 
@@ -51,7 +48,7 @@ const formatPingTime = (date: Date | null, currentLang: string) => {
     }
 };
 
-export default function TabServerStatus() {
+export function TabServerStatus() {
     const { lang } = useLanguage();
     const [isLoading, setIsLoading] = useState(true);
     const [healthData, setHealthData] = useState<HealthResponseData | null>(null);

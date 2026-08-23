@@ -1,5 +1,5 @@
 import React from "react";
-import { GeoLocationData } from "@/lib/utils";
+import { GeoLocationData } from "@/lib";
 
 export type ActiveContext = "none" | "help" | "certificate" | "certificate-detail" | "info";
 

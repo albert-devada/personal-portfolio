@@ -1,7 +1,7 @@
 "use client";
 
-import { getApiUrl } from "@/lib/api";
 import { useState } from "react";
+import { getApiUrl } from "@/lib";
 import Image, { ImageProps } from "next/image";
 
 const DEFAULT_FALLBACK = "/covernews.jpg";

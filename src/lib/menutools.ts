@@ -1,3 +1,4 @@
+import type { ToolItem } from "@/common/types";
 import {
     MapPin,
     Server,
@@ -9,7 +10,6 @@ import {
     TrendingUp,
     Coins,
 } from "lucide-react";
-import type { ToolItem } from "@/common/types/playgorund";
 
 export const TOOLS: ToolItem[] = [
     {

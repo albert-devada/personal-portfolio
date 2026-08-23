@@ -1,25 +1,14 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { LanguageText, LanguageBlurFadeText } from "@/language/languageTranslate";
-import { useLanguage } from "@/language/languageProvider";
-import { appToast } from "@/components/sonnerProvider";
-import { BlurFade } from "@/components/blurFade";
-import { Card, CardContent } from "@/components/containerCard";
-import {
-    Check,
-    Copy,
-    Trash2,
-    Code2,
-    Minimize2,
-    Sparkles,
-    AlertCircle,
-} from "lucide-react";
+import { BlurFade, appToast, Card, CardContent } from "@/components";
+import { useLanguage, LanguageText, LanguageBlurFadeText } from "@/language";
+import { Check, Copy, Trash2, Code2, Minimize2, Sparkles, AlertCircle } from "lucide-react";
 
 type FormatMode = "prettify" | "minify";
 const BLUR_FADE_DELAY = 0.1;
 
-export default function TabJsonFormatter() {
+export function TabJsonFormatter() {
     const { lang } = useLanguage();
     const [inputJson, setInputJson] = useState<string>("");
     const [formattedJson, setFormattedJson] = useState<string>("");

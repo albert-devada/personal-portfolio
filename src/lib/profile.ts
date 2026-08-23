@@ -1,4 +1,4 @@
-import { authors } from "@/common/constants/author";
+import { authors } from "@/common/constants";
 import {
     GitHubLogoIcon,
     LinkedInLogoIcon,

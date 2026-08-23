@@ -1,9 +1,10 @@
 "use client";
 
+import { useLanguage } from "@/language";
+import { getAuthor } from "@/common/constants";
 import React, { useEffect, useState } from "react";
-import { getPersonalProfile } from "@/common/supabase/client";
-import { getAuthor } from "@/common/constants/author";
-import { useLanguage } from "@/language/languageProvider";
+import { getPersonalProfile } from "@/common/supabase";
+
 
 interface PersonalProfile {
     full_name?: string;

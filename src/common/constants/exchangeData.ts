@@ -1,20 +1,6 @@
 import React from "react";
-import {
-    Droplet,
-    Flame,
-    Fuel,
-    Pickaxe,
-    Atom,
-    Leaf,
-    Coins,
-    Sun,
-    Gem,
-    Cpu,
-    Factory,
-    Plane,
-} from "lucide-react";
-import { BaseMarketItem } from "@/common/types/playgorund";
-
+import { BaseMarketItem } from "@/common/types";
+import { Droplet, Flame, Fuel, Pickaxe, Atom, Leaf, Coins, Sun, Gem, Cpu, Factory, Plane } from "lucide-react";
 
 export function attachMarketIcons<item extends BaseMarketItem>(items: item[],metadataMap: Record<string, { id: string; icon: React.ElementType; iconColor: string }>): item[] {
     return items.map((item) => {

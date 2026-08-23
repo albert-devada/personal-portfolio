@@ -1,12 +1,12 @@
 "use client";
 
-import { getCertificateList } from '@/common/supabase/client';
-import { useState, useEffect } from "react";
-import { ArrowUpRight, ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
-import { LanguageText, LanguageBlurFadeText } from "@/language/languageTranslate";
-import Image from "next/image";
 import Link from "next/link";
-import BlurFadeText from "@/components/blurFadeText";
+import Image from "next/image";
+import { useState, useEffect } from "react";
+import { BlurFadeText } from "@/components";
+import { getCertificateList } from '@/common/supabase';
+import { LanguageText, LanguageBlurFadeText } from "@/language";
+import { ArrowUpRight, ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 
 function formatIssuedDate(dateString: string, lang: "en" | "id" = "en"): string {
     if (!dateString) return "";
@@ -62,14 +62,14 @@ function CertLogoImage({ src, alt }: { src: string | null | undefined; alt: stri
     );
 }
 
-type CertificationItem = Record<string, string | number | boolean | null | undefined>;
+type CertificateCoursesItem = Record<string, string | number | boolean | null | undefined>;
 
-interface CertificationSectionProps {
+interface CertificateCoursesProps {
     isFullPage?: boolean;
 }
 
-export default function CertificationSection({ isFullPage = false }: CertificationSectionProps) {
-    const [certifications, setCertifications] = useState<CertificationItem[]>([]);
+export function CertificateCourses({ isFullPage = false }: CertificateCoursesProps) {
+    const [certifications, setCertifications] = useState<CertificateCoursesItem[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [currentPage, setCurrentPage] = useState(1);
 

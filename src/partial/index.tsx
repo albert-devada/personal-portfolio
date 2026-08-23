@@ -1,0 +1,7 @@
+export * from './avatarsProfile'
+export * from './boxCardGrid'
+export * from './displayProfile'
+export * from './macWindow'
+export * from './mainFooter'
+export * from './newsCardList'
+export * from './sidebarMain'

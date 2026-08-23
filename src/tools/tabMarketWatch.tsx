@@ -1,11 +1,11 @@
 "use client";
 
-import { getApiUrl } from "@/lib/api";
+import { getApiUrl } from "@/lib";
+import { MarketWidget } from "@/widget";
 import { useEffect, useState } from "react";
-import { MarketWidget } from "@/widget/marketWidget";
-import { TabMarket, BaseMarketItem, MarketWatchResponse, NewsArticleItem } from "@/common/types/playgorund";
+import { TabMarket, BaseMarketItem, MarketWatchResponse, NewsArticleItem } from "@/common/types";
 
-export default function TabMarketWatch() {
+export function TabMarketWatch() {
     const [cryptoItems, setCryptoItems] = useState<BaseMarketItem[]>([]);
     const [stocksItems, setStocksItems] = useState<BaseMarketItem[]>([]);
     const [newsItems, setMarketNewsItems] = useState<NewsArticleItem[]>([]);

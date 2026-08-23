@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
-import { GeoLocationData } from "@/lib/utils";
-import { ActiveContext, HistoryItem } from "../types/terminal";
+import { GeoLocationData } from "@/lib";
 import { executeCommand } from "./registryTerminal";
+import { ActiveContext, HistoryItem } from "@/common/types";
 
 export function useTerminal(initialIp: string, geoData?: GeoLocationData | null) {
     const [input, setInput] = useState("");

@@ -1,10 +1,8 @@
 import { NextResponse } from "next/server";
-import { VerifedSession } from "@/lib/session";
-import { fetchCryptoData } from "@/common/service/cryptoService";
-import { fetchStocksData } from "@/common/service/stocksService";
-import { fetchMarketNewsData } from "@/common/service/marketService";
-import { authors } from "@/common/constants/author";
-import { BaseMarketItem, NewsArticleItem } from "@/common/types/playgorund";
+import { authors } from "@/common/constants";
+import { VerifedSession } from "@/lib/server";
+import { BaseMarketItem, NewsArticleItem } from "@/common/types";
+import { fetchCryptoData, fetchStocksData, fetchMarketNewsData } from "@/common/service";
 
 export const dynamic = "force-dynamic";
 

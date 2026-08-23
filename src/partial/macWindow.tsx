@@ -1,4 +1,4 @@
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib";
 
 interface MacWindowProps {
     title?: React.ReactNode;
@@ -7,12 +7,7 @@ interface MacWindowProps {
     bodyClassName?: string;
 }
 
-export function MacWindow({
-    title,
-    children,
-    className,
-    bodyClassName,
-}: Readonly<MacWindowProps>) {
+export function MacWindow({ title, children, className, bodyClassName }: Readonly<MacWindowProps>) {
     return (
         <div className={cn("rounded-2xl border border-border/60 bg-background/40 shadow-sm backdrop-blur-sm", className,)}>
             <div className="flex items-center gap-3 rounded-t-2xl border-b border-border/60 bg-muted/40 px-4 py-3">

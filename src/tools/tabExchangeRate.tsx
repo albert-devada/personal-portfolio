@@ -1,12 +1,12 @@
 "use client";
 
-import { getApiUrl } from "@/lib/api";
+import { getApiUrl } from "@/lib";
+import { MarketWidget } from "@/widget";
 import { useEffect, useState } from "react";
-import { MarketWidget } from "@/widget/marketWidget";
-import { TabMarket, BaseMarketItem, MarketExchangeResponse } from "@/common/types/playgorund";
-import { attachMarketIcons, ENERGY_METADATA, METALS_METADATA } from "@/common/constants/exchangeData";
+import { TabMarket, BaseMarketItem, MarketExchangeResponse } from "@/common/types";
+import { attachMarketIcons, ENERGY_METADATA, METALS_METADATA } from "@/common/constants";
 
-export default function TabExchangeRate() {
+export function TabExchangeRate() {
     const [currencyItems, setCurrencyItems] = useState<BaseMarketItem[]>([]);
     const [energyItems, setEnergyItems] = useState<BaseMarketItem[]>([]);
     const [metalsItems, setMetalsItems] = useState<BaseMarketItem[]>([]);

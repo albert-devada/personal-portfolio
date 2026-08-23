@@ -1,16 +1,16 @@
 "use client";
 
-import { getPersonalProfile } from '@/common/supabase/client';
-import { navigationMenu } from "@/lib/navigation";
-import { MdVerified as VerifiedIcon } from "react-icons/md";
-import { ChevronRight } from "lucide-react";
-import { BlurFade } from "@/components/blurFade";
-import { LanguageText } from "@/language/languageTranslate";
-import { Avatar } from "@/partial/avatarsProfile";
-import { MusicWidget } from "@/widget/musicWidget";
 import Link from "next/link";
 import Image from "next/image";
-import Typography from "@/theme/typography";
+import { Avatar } from "@/partial";
+import { Typography } from "@/theme";
+import { MusicWidget } from "@/widget";
+import { navigationMenu } from "@/lib";
+import { BlurFade } from "@/components";
+import { LanguageText } from "@/language";
+import { ChevronRight } from "lucide-react";
+import { getPersonalProfile } from '@/common/supabase';
+import { MdVerified as VerifiedIcon } from "react-icons/md";
 
 interface DesktopMenuProps {
     pathname: string;

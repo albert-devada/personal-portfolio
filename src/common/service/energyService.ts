@@ -1,5 +1,5 @@
-import { BaseMarketItem, MarketChartResponse } from "@/common/types/playgorund";
 import { getUsdToIdrRate } from "./currencyService";
+import { BaseMarketItem, MarketChartResponse } from "@/common/types";
 
 interface EnergyMetadata {
     id: string;

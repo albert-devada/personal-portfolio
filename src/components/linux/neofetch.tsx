@@ -1,5 +1,5 @@
 import React from "react";
-import { authors } from "@/common/constants/author";
+import { authors } from "@/common/constants";
 
 export const NeofetchOutput: React.FC = () => (
     <div className="flex items-start gap-4 sm:gap-6 mt-3 font-mono text-xs sm:text-sm select-none overflow-x-auto whitespace-pre">

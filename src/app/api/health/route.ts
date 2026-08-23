@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { authors } from "@/common/constants/author";
-import { supabase } from "@/common/supabase/server";
+import { authors } from "@/common/constants";
+import { supabase } from "@/common/supabase";
 
 export const dynamic = "force-dynamic";
 

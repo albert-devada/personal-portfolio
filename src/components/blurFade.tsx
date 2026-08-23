@@ -1,15 +1,7 @@
 "use client";
 
 import { useRef } from "react";
-import {
-    AnimatePresence,
-    motion,
-    useInView,
-    type MotionProps,
-    type UseInViewOptions,
-    type Variants,
-} from "motion/react";
-
+import { AnimatePresence, motion, useInView, type MotionProps, type UseInViewOptions, type Variants } from "motion/react";
 type MarginType = UseInViewOptions["margin"];
 
 interface BlurFadeProps extends MotionProps {

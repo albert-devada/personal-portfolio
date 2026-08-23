@@ -1,5 +1,5 @@
+import { authors } from "@/common/constants";
 import { NextResponse, type NextRequest } from "next/server";
-import { authors } from "@/common/constants/author";
 
 export const dynamic = "force-dynamic";
 
@@ -38,15 +38,15 @@ export async function GET(request: NextRequest) {
             message: "Welcome to Albert Devada Public API Service for Developers",
             meta: API_CONFIG,
             endpoints: [
-                { name: "System Health", url: `${baseUrl}/health`, path: `${baseUrl}/health`, method: "GET" },
-                { name: "CVE Data Feed", url: `${baseUrl}/cvedata`, path: `${baseUrl}/cvedata`, method: "GET" },
-                { name: "CVE Search", url: `${baseUrl}/cvesearch`, path: `${baseUrl}/cvesearch`, method: "POST" },
-                { name: "Vulnerability Data", url: `${baseUrl}/vulndata`, path: `${baseUrl}/vulndata`, method: "GET" },
-                { name: "Vulnerability Search", url: `${baseUrl}/vulnsearch`, path: `${baseUrl}/vulnsearch`, method: "POST" },
-                { name: "Data Breach Check", url: `${baseUrl}/breach`, path: `${baseUrl}/breach`, method: "POST" },
-                { name: "Exchange Rates", url: `${baseUrl}/exchange`, path: `${baseUrl}/exchange`, method: "GET" },
-                { name: "Market News", url: `${baseUrl}/market`, path: `${baseUrl}/market`, method: "GET" },
-                { name: "Image Service", url: `${baseUrl}/image`, path: `${baseUrl}/image`, method: "GET" },
+                { name: "System Health", path: `${baseUrl}/health`, method: "GET" },
+                { name: "CVE Data Feed", path: `${baseUrl}/cvedata`, method: "GET" },
+                { name: "CVE Search", path: `${baseUrl}/cvesearch`, method: "POST" },
+                { name: "Vulnerability Data", path: `${baseUrl}/vulndata`, method: "GET" },
+                { name: "Vulnerability Search", path: `${baseUrl}/vulnsearch`, method: "POST" },
+                { name: "Data Breach Check", path: `${baseUrl}/breach`, method: "POST" },
+                { name: "Exchange Rates", path: `${baseUrl}/exchange`, method: "GET" },
+                { name: "Market News", path: `${baseUrl}/market`, method: "GET" },
+                { name: "Image Service", path: `${baseUrl}/image`, method: "GET" },
             ],
             timestamp: new Date().toISOString(),
         },

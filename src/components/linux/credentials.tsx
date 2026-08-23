@@ -1,8 +1,8 @@
 "use client";
 
+import { useLanguage } from "@/language";
+import { getCertificateList } from "@/common/supabase";
 import React, { useEffect, useState, useRef } from "react";
-import { getCertificateList } from "@/common/supabase/client";
-import { useLanguage } from "@/language/languageProvider";
 
 type CertificationItem = Record<string, string | number | boolean | null | undefined>;
 

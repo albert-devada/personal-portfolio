@@ -1,4 +1,4 @@
-import { getVisitorDetails } from "@/common/service/locationVisitor";
+import { getVisitorDetails } from "@/common/service";
 
 export async function VerifedTurnstileToken(token?: string | null, overrideIp?: string): Promise<boolean> {
 

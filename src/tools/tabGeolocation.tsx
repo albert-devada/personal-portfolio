@@ -1,24 +1,11 @@
 "use client";
 
-import { GeoLocationData } from "@/lib/utils";
-import { UAParser } from "ua-parser-js";
 import Image from "next/image";
-import { 
-    Globe, 
-    Network, 
-    Clock, 
-    Navigation,
-    Cpu,
-    Monitor,
-    Terminal,
-    Code2
-} from "lucide-react";
-
-import { Card, CardContent } from "@/components/containerCard";
-import { BlurFade } from "@/components/blurFade";
-import BlurFadeText from "@/components/blurFadeText";
-import { LanguageText, LanguageBlurFadeText } from "@/language/languageTranslate";
-import { useLanguage } from "@/language/languageProvider";
+import { UAParser } from "ua-parser-js";
+import { GeoLocationData } from "@/lib";
+import { BlurFade, BlurFadeText, Card, CardContent } from "@/components";
+import { useLanguage, LanguageText, LanguageBlurFadeText } from "@/language";
+import { Globe, Network, Clock, Navigation, Cpu, Monitor, Terminal, Code2 } from "lucide-react";
 
 interface LocationTabProps {
     visitorIp: string;
@@ -26,7 +13,7 @@ interface LocationTabProps {
     geoData: GeoLocationData | null;
 }
 
-export default function TabGeolocation({ visitorIp, uaData, geoData }: LocationTabProps) {
+export function TabGeolocation({ visitorIp, uaData, geoData }: LocationTabProps) {
     const { lang } = useLanguage();
 
     const unknownOS = lang === "en" ? "Unknown OS" : "OS Tidak Diketahui";

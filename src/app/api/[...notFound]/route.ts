@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { authors } from "@/common/constants/author";
+import { authors } from "@/common/constants";
 
 export const dynamic = "force-dynamic";
 
