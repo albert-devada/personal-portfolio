@@ -12,7 +12,7 @@ interface ProfileProps {
 export default function DisplayProfile({ avatars, name, username }: ProfileProps) {
 
     const getAvatarSrc = (src: string | null | undefined): string => {
-        if (!src) return "/avatar.jpeg";
+        if (!src) return "/assets/avatar.jpeg";
 
         if (src.startsWith("http://")) {
             return src.replace("http://", "https://");

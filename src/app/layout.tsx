@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Analytics } from "@vercel/analytics/react";
 import { Geist_Mono, Inter } from "next/font/google";
 import { MetadataConstants } from "@/common/constants/metadata";
 import { ThemeProvider } from "@/theme/themeProvider";
@@ -79,7 +80,7 @@ export const metadata: Metadata = {
         images: [ogImage],
     },
     abstract: MetadataConstants.description,
-    category: "Portfolio",
+    category: "Portfolio & Cybersecurity Utilities",
     alternates: {
         canonical: "/",
         types: {
@@ -97,8 +98,22 @@ function JsonLdScript() {
         "@type": "Person",
         "@id": `${siteUrl}/#person`,
         name: MetadataConstants.authors.name,
+        alternateName: ["Naufal Burhan", "Albert Devada", "albert_devada"],
         url: siteUrl,
         jobTitle: MetadataConstants.authors.jobTitle,
+        description: MetadataConstants.description,
+        knowsAbout: [
+            "Cybersecurity",
+            "Backend Engineering",
+            "Penetration Testing",
+            "Ethical Hacking",
+            "Bug Hunting",
+            "Laravel",
+            "Next.js",
+            "TypeScript",
+            "Vulnerability Assessment",
+            "Web Security"
+        ],
         sameAs: [
             siteUrl,
             MetadataConstants.authors.github,
@@ -111,13 +126,17 @@ function JsonLdScript() {
     const website = {
         "@context": "https://schema.org",
         "@type": "WebSite",
-        name: MetadataConstants.exTitle,
+        "@id": `${siteUrl}/#website`,
+        name: `${MetadataConstants.authors.displayName} (Albert Devada) | Portfolio & Cybersecurity Utilities`,
         url: siteUrl,
         description: MetadataConstants.description,
         author: {
-            "@type": "Person",
-            name: MetadataConstants.authors.name,
+            "@id": `${siteUrl}/#person`,
         },
+        publisher: {
+            "@id": `${siteUrl}/#person`,
+        },
+        inLanguage: ["en-US", "id-ID"],
     };
 
     const jsonLd = {
@@ -138,8 +157,12 @@ export default function RootLayout({children}: Readonly<{children: React.ReactNo
 
     return (
         <html lang="en" suppressHydrationWarning className={cn("font-sans", inter.variable)}>
+            <head>
+                <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml" />
+            </head>
             <body className={cn(geistMono.variable, inter.variable, "antialiased min-h-screen", "bg-sky-100 text-slate-900", "dark:bg-[#0f172a] dark:text-slate-50")}>
                 <JsonLdScript />
+                <Analytics />
                 <ThemeProvider>
                     <AnimatedBackground />
                     <LoadingScreen />
