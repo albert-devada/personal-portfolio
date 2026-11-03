@@ -119,7 +119,7 @@ personal-portfolio/
 │   ├── tools/              # Specialized tools test suites
 │   └── utils/              # Encryption, date formatting, and rate limiters
 ├── docker-compose.yml      # Docker containerization configuration
-├── jest.config.ts          # Jest testing configuration
+├── jest.config.mjs         # Jest testing configuration
 ├── next.config.ts          # Next.js configuration
 ├── package.json            # Project dependencies & scripts
 ├── playwright.config.ts    # Playwright E2E test configuration
@@ -260,7 +260,7 @@ The project also includes Docker Compose configuration for containerized develop
 
 ### Test Coverage & CI/CD Pipeline
 
-- ✅ **Unit & Component Testing ([Jest](./jest.config.ts))**: 4 test suites, 17 tests passed (100% PASS)
+- ✅ **Unit & Component Testing ([Jest](./jest.config.mjs))**: 4 test suites, 17 tests passed (100% PASS)
 - ✅ **Code Quality & Linting ([ESLint](./eslint.config.mjs))**: Zero errors, zero warnings
 - ✅ **Production Build ([Next.js Turbopack](./next.config.ts))**: 20 routes + Proxy middleware compiled successfully
 - ✅ **Cross-Browser E2E ([Playwright](./playwright.config.ts))**: Automated in CI via GitHub Actions ([`playwright.yml`](./.github/workflows/playwright.yml))

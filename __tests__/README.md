@@ -115,7 +115,7 @@ personal-portfolio/
 │   └── tools/__tests__/            # Security & Utility Tool Tests
 ├── e2e/                            # Playwright End-to-End Tests
 ├── __mocks__/                      # ESM & Third-Party Library Mocks (Lenis, Turnstile)
-├── jest.config.ts                  # Jest configuration
+├── jest.config.mjs                 # Jest configuration
 ├── jest.setup.ts                   # DOM matchers & global browser mocks
 └── playwright.config.ts            # Playwright configuration
 ```
