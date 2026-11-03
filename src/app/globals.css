@@ -1,6 +1,7 @@
-@import "tailwindcss";
-@plugin "@tailwindcss/typography";
+@import url('https://api.fontshare.com/v2/css?f[]=rowan@300,400&display=swap');
+@import 'tailwindcss';
 @import "tw-animate-css";
+@plugin "@tailwindcss/typography";
 @import "shadcn/tailwind.css";
 
 @custom-variant dark (&:is(.dark *));
@@ -77,31 +78,34 @@
     }
 
     --animate-shimmer-slide: shimmer-slide var(--speed) ease-in-out infinite alternate;
+    --animate-spin-around: spin-around calc(var(--speed) * 2) infinite linear;
 
-    --animate-spin-around: spin-around calc(var(--speed) * 2) infinite linear
-;
-  @keyframes shimmer-slide {
-  to {
-    transform: translate(calc(100cqw - 100%), 0);}}
-  @keyframes spin-around {
-  0% {
-    transform: translateZ(0) rotate(0);}
-  15%, 35% {
-    transform: translateZ(0) rotate(90deg);}
-  65%, 85% {
-    transform: translateZ(0) rotate(270deg);}
-  100% {
-    transform: translateZ(0) rotate(360deg);}}}
+    @keyframes shimmer-slide {
+    to {
+        transform: translate(calc(100cqw - 100%), 0);}
+    }
+    
+    @keyframes spin-around {
+    0% {
+        transform: translateZ(0) rotate(0);}
+    15%, 35% {
+        transform: translateZ(0) rotate(90deg);}
+    65%, 85% {
+        transform: translateZ(0) rotate(270deg);}
+    100% {
+        transform: translateZ(0) rotate(360deg);}
+    }
+}
 
 @layer base {
     body {
         @apply transition-colors duration-500 ease-in-out bg-background text-foreground;
     }
-  * {
-    @apply border-border outline-ring/50;
+    * {
+        @apply border-border outline-ring/50;
     }
-html {
-    @apply font-sans;
+    html {
+        @apply font-sans;
     }
 }
 
@@ -207,10 +211,11 @@ html[data-magicui-theme-vt="active"]::view-transition-new(root) {
 }
 
 @layer utilities {
+
     .animate-text-shine {
         animation: text-shine 5s linear infinite;
         -webkit-animation: text-shine 5s linear infinite;
-}
+    }
 
     @keyframes text-shine {
         0% {

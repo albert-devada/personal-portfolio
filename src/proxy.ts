@@ -1,82 +1,21 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { checkRateLimit } from "@/lib/rateLimit";
-
-interface PortfolioSessionPayload {
-    refresh_token: string;
-    expires_at: number;
-    is_anonymous: boolean;
-}
-
-const SECRET_KEY_RAW = process.env.APP_KEY || "albertdevada__portfolio_secret_key_64bytes";
-
-async function getCryptoKey(): Promise<CryptoKey> {
-    const encoder = new TextEncoder();
-    const keyData = encoder.encode(SECRET_KEY_RAW);
-    const hash = await crypto.subtle.digest("SHA-256", keyData);
-    return await crypto.subtle.importKey("raw", hash, { name: "AES-GCM" }, false, ["encrypt", "decrypt"]);
-}
-
-async function encryptSession(data: PortfolioSessionPayload, cryptoKey: CryptoKey): Promise<string> {
-    const encoder = new TextEncoder();
-    const encodedData = encoder.encode(JSON.stringify(data));
-    const iv = crypto.getRandomValues(new Uint8Array(12));
-    const encryptedBuffer = await crypto.subtle.encrypt({ name: "AES-GCM", iv }, cryptoKey, encodedData);
-    const combined = new Uint8Array(iv.length + encryptedBuffer.byteLength);
-    combined.set(iv, 0);
-    combined.set(new Uint8Array(encryptedBuffer), iv.length);
-    return Buffer.from(combined).toString("base64");
-}
-
-async function decryptSession(base64Data: string, cryptoKey: CryptoKey): Promise<PortfolioSessionPayload | null> {
-    const combined = Buffer.from(base64Data, "base64");
-
-    if (combined.length < 13) return null;
-
-    const iv = combined.slice(0, 12);
-    const ciphertext = combined.slice(12);
-    const decryptedBuffer = await crypto.subtle.decrypt({ name: "AES-GCM", iv }, cryptoKey, ciphertext);
-    return JSON.parse(new TextDecoder().decode(decryptedBuffer)) as PortfolioSessionPayload;
-}
+import { CheckRateLimit, getClientIP } from "@/utils";
+import { Config } from "@/common/config";
+import { getCryptoKey, encryptSession, decryptSession } from "@/utils/encryption";
+import type { PortfolioSessionPayload } from "@/common/types";
 
 export async function proxy(request: NextRequest): Promise<NextResponse> {
-    const isProd = process.env.NODE_ENV === "production";
+    const isProd = Config.WebUrl.startsWith("https://");
     const proto = request.headers.get("x-forwarded-proto");
     const host = request.headers.get("host") || "";
     const pathname = request.nextUrl.pathname;
-
-    let baseHost = "";
-    let baseOrigin = "";
-    let apiHost = "";
-    let wwwHost = "";
-    let apiOrigin = "";
-    let wwwOrigin = "";
-
-    if (isProd && process.env.APP_DOMAIN) {
-        const rawDomain = process.env.APP_DOMAIN.trim();
-        try {
-            const parsedUrl = new URL(rawDomain.startsWith("http") ? rawDomain : `https://${rawDomain}`);
-            baseHost = parsedUrl.hostname.replace(/^www\./, "");
-            baseOrigin = `${parsedUrl.protocol}//${baseHost}`;
-            apiHost = `api.${baseHost}`;
-            wwwHost = `www.${baseHost}`;
-            apiOrigin = `${parsedUrl.protocol}//${apiHost}`;
-            wwwOrigin = `${parsedUrl.protocol}//${wwwHost}`;
-        } catch {
-            baseHost = host;
-            baseOrigin = `https://${host}`;
-            apiHost = `api.${host}`;
-            wwwHost = `www.${host}`;
-            apiOrigin = `https://${apiHost}`;
-            wwwOrigin = `https://${wwwHost}`;
-        }
-    } else {
-        baseHost = "localhost";
-        apiHost = "api.localhost";
-        wwwHost = "localhost";
-        baseOrigin = "http://localhost:3000";
-        wwwOrigin = "http://localhost:3000";
-        apiOrigin = "http://localhost:3000";
-    }
+    const webUrl = new URL(Config.WebUrl);
+    const apiUrl = new URL(Config.ApiUrl);
+    const baseHostname = webUrl.hostname.replace(/^www\./, "");
+    const apiHost = apiUrl.host;
+    const apiHostname = apiUrl.hostname;
+    const wwwHost = `www.${baseHostname}`;
+    const wwwOrigin = `${webUrl.protocol}//${wwwHost}`;
 
     if (isProd && proto && proto === "http") {
         const secureUrl = new URL(request.url);
@@ -84,7 +23,11 @@ export async function proxy(request: NextRequest): Promise<NextResponse> {
         return NextResponse.redirect(secureUrl, 308);
     }
 
-    const isApiSubdomain = host.startsWith(apiHost) || host.startsWith("api.localhost");
+    const isApiSubdomain =
+        host === apiHost ||
+        host === apiHostname ||
+        host.startsWith("api.localhost") ||
+        (apiHostname !== baseHostname && host.startsWith("api."));
 
     if (isApiSubdomain && pathname.startsWith("/api")) {
         const cleanPath = pathname.replace(/^\/api/, "") || "/";
@@ -92,16 +35,16 @@ export async function proxy(request: NextRequest): Promise<NextResponse> {
         return NextResponse.redirect(redirectUrl, 308);
     }
 
-    if (isProd && (host === baseHost || host === wwwHost) && pathname.startsWith("/api")) {
+    if (isProd && (host === Config.BaseDomain || host === wwwHost || host === baseHostname) && pathname.startsWith("/api")) {
         const cleanPath = pathname.replace(/^\/api/, "") || "/";
-        const redirectUrl = new URL(cleanPath, apiOrigin);
+        const redirectUrl = new URL(cleanPath, Config.ApiUrl);
         return NextResponse.redirect(redirectUrl, 308);
     }
 
     const isApiRoute = isApiSubdomain || pathname.startsWith("/api");
     const requestOrigin = request.headers.get("origin") || "";
-    const allowedOrigins = [baseOrigin, wwwOrigin, "http://localhost:3000"];
-    const corsOrigin = allowedOrigins.includes(requestOrigin) ? requestOrigin : baseOrigin;
+    const allowedOrigins = [Config.WebUrl, wwwOrigin, Config.ApiUrl, "http://localhost:3000"];
+    const corsOrigin = allowedOrigins.includes(requestOrigin) ? requestOrigin : Config.WebUrl;
 
     if (isApiRoute && request.method === "OPTIONS") {
         return new NextResponse(null, {
@@ -118,12 +61,8 @@ export async function proxy(request: NextRequest): Promise<NextResponse> {
 
     let rateLimitResult = { success: true, limit: 60, remaining: 60, reset: 60 };
     if (isApiRoute) {
-        const clientIp =
-            request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
-            request.headers.get("x-real-ip") ||
-            "127.0.0.1";
-
-        rateLimitResult = checkRateLimit(clientIp, 60, 60000);
+        const clientIp = getClientIP(request);
+        rateLimitResult = CheckRateLimit(clientIp, 60, 60000);
 
         if (!rateLimitResult.success) {
             return NextResponse.json(
@@ -195,10 +134,10 @@ export async function proxy(request: NextRequest): Promise<NextResponse> {
         const cryptoKey = await getCryptoKey();
         encryptedSessionValue = await encryptSession(simpleSessionPayload, cryptoKey);
     } catch {
-        encryptedSessionValue = btoa(JSON.stringify(simpleSessionPayload));
+        encryptedSessionValue = Buffer.from(JSON.stringify(simpleSessionPayload)).toString("base64url");
     }
 
-    const cookieDomain = isProd && baseHost ? `.${baseHost}` : undefined;
+    const cookieDomain = isProd && !baseHostname.includes("localhost") ? `.${baseHostname}` : undefined;
 
     response.cookies.set("portfolio_session", encryptedSessionValue, {
         httpOnly: true,
@@ -208,7 +147,7 @@ export async function proxy(request: NextRequest): Promise<NextResponse> {
         domain: cookieDomain,
     });
 
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "https://*.supabase.co";
+    const supabaseUrl = Config.Supabase.Url || "https://*.supabase.co";
     const scriptPolicy = `script-src 'self' 'unsafe-inline' https://*.cloudflare.com https://challenges.cloudflare.com https://static.cloudflareinsights.com https://*.cloudflareinsights.com${isProd ? "" : " 'unsafe-eval'"};`;
     const devConnectPolicy = isProd ? "" : " ws: wss:";
 
@@ -216,7 +155,7 @@ export async function proxy(request: NextRequest): Promise<NextResponse> {
         "Content-Security-Policy",
         `default-src 'self'; ` +
             scriptPolicy +
-            `connect-src 'self' ${apiOrigin} ${supabaseUrl} https://*.supabase.co https://*.cloudflare.com https://challenges.cloudflare.com https://static.cloudflareinsights.com https://*.cloudflareinsights.com${devConnectPolicy}; ` + 
+            `connect-src 'self' ${Config.WebUrl} ${Config.ApiUrl} https://*.${baseHostname} ${supabaseUrl} https://*.supabase.co https://*.cloudflare.com https://challenges.cloudflare.com https://static.cloudflareinsights.com https://*.cloudflareinsights.com${devConnectPolicy}; ` + 
             `style-src 'self' 'unsafe-inline'; ` +
             `img-src * data: blob:; ` + 
             `font-src 'self' data: https://fonts.gstatic.com; ` +
@@ -232,6 +171,6 @@ export async function proxy(request: NextRequest): Promise<NextResponse> {
 
 export const config = {
     matcher: [
-        "/((?!_next|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
+        "/((?!_next|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|avif|ico|mp3|mp4|woff2?)$).*)",
     ],
 };

@@ -1,3 +1,4 @@
-export * from "./animatedBackground";
-export * from "./themeProvider";
-export * from "./typography";
+export * from "./provider";
+export * from "./themeBasics";
+export * from "./scrollingButton";
+export { default as Typography , default} from "./typography";

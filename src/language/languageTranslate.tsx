@@ -1,6 +1,6 @@
 "use client";
 
-import { BlurFadeText } from "@/components";
+import { BlurFadeText } from "@/components/transition";
 import { useLanguage } from "./languageProvider";
 
 interface LanguageTextProps {
@@ -20,5 +20,5 @@ export function LanguageText({ enText, idText }: LanguageTextProps) {
 
 export function LanguageBlurFadeText({ enText, idText, ...props }: LanguageBlurFadeTextProps) {
     const { lang } = useLanguage();
-    return <BlurFadeText text={lang === "en" ? enText : idText} {...props} />;
+    return <BlurFadeText key={lang} text={lang === "en" ? enText : idText} {...props} />;
 }

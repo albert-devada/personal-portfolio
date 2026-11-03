@@ -1,6 +1,5 @@
-import React from "react";
 import { render, screen } from "@testing-library/react";
-import { Badge } from "../badge";
+import { Badge } from "@/components/base/badge";
 
 describe("Badge Component", () => {
     it("renders badge with children text correctly", () => {
@@ -14,4 +13,11 @@ describe("Badge Component", () => {
         const badgeElement = screen.getByText("High Risk");
         expect(badgeElement).toHaveClass("bg-destructive");
     });
+
+    it("applies secondary variant class correctly", () => {
+        render(<Badge variant="secondary">Security Analyst</Badge>);
+        const badgeElement = screen.getByText("Security Analyst");
+        expect(badgeElement).toHaveClass("bg-secondary");
+    });
 });
+

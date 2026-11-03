@@ -1,16 +1,25 @@
-MIT License
+Non-Commercial Attribution License
 
 Copyright (c) 2026 Albert Devada
+Original Repository: https://github.com/albert-devada/personal-portfolio
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+of this software and associated documentation files (the "Software"), to use,
+copy, modify, merge, publish, and distribute the Software for personal,
+educational, and non-commercial purposes, subject to the following conditions:
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+1. ATTRIBUTION (CREDIT REQUIRED):
+   The above copyright notice, this permission notice, and an explicit, visible,
+   and clickable attribution link referencing the author and original repository:
+   https://github.com/albert-devada/personal-portfolio
+   MUST be retained and clearly displayed in all copies, substantial portions,
+   forks, or derivative works of the Software, as well as in the documentation
+   or public footer of any deployed instances.
+
+2. NON-COMMERCIAL RESTRICTION (NO RESALE):
+   The Software and any derivative works MAY NOT be sold, sublicensed, monetized,
+   rented, leased, packaged into paid templates, or used directly or indirectly
+   for any commercial purposes.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,

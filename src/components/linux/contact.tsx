@@ -1,5 +1,5 @@
 import React from "react";
-import { MediaSocials } from "@/lib";
+import { MEDIA_SOCIALS_PROFILE } from "@/common/constants";
 import { useLanguage } from "@/language";
 
 export const ContactOutput: React.FC = () => {
@@ -25,7 +25,7 @@ export const ContactOutput: React.FC = () => {
                     <span>LOCAL_PORT</span><span>REMOTE_ENDPOINT</span>
                 </div>
                 <div className="mt-1.5 space-y-1 text-zinc-300">
-                    {MediaSocials.map((item, index) => {
+                    {MEDIA_SOCIALS_PROFILE.map((item, index) => {
                         let port = "443/tcp";
                         switch (item.title.toLowerCase()) {
                             case "linkedin": port = "80/tcp"; break;
@@ -36,12 +36,7 @@ export const ContactOutput: React.FC = () => {
                         return (
                             <div key={index} className="grid grid-cols-[100px_1fr] gap-x-4 items-center">
                                 <span className="text-zinc-500">{port}</span>
-                                <a 
-                                    href={item.href} 
-                                    target="_blank" 
-                                    rel="noreferrer" 
-                                    className="text-[#00b0ff] hover:underline select-text break-all font-normal"
-                                >
+                                <a href={item.href} target="_blank" rel="me noopener" className="text-[#00b0ff] hover:underline select-text break-all font-normal">
                                     {item.href}
                                 </a>
                             </div>

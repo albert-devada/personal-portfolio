@@ -1,13 +1,7 @@
 import { NextResponse } from "next/server";
-import { authors } from "@/common/constants";
+import { API_CONFIG } from "@/common/config";
 
 export const dynamic = "force-dynamic";
-
-const API_CONFIG = {
-    version: authors.mainAuthor.version,
-    author: { name: authors.mainAuthor.nickname, github: authors.mainAuthor.github, instagram: authors.mainAuthor.instagram, linkedin: authors.mainAuthor.linkedin },
-};
-
 const getMeta = () => ({ ...API_CONFIG });
 
 function notFoundResponse() {

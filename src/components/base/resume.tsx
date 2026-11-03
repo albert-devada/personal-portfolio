@@ -1,0 +1,40 @@
+"use client";
+
+import { appToast, ShimmerButton } from "@/components/ui";
+import { ChevronRight } from "lucide-react";
+import { useLanguage, LanguageText } from "@/language";
+import type { ResumeButtonProps } from "@/common/types";
+import { cn } from "@/utils";
+
+export function ResumeDowload({ portfolioUrl, className, fileName = "Resume_Portofolio.pdf" }: ResumeButtonProps) {
+    const { lang } = useLanguage();
+
+    const handleAlert = () => {
+        const alertMsg = lang === "en" ? "The portfolio PDF is currently unavailable." : "File PDF portofolio saat ini belum tersedia.";
+        appToast.info(alertMsg);
+    };
+
+    return (
+        portfolioUrl ? (
+            <a href={portfolioUrl} download={fileName} className="inline-block w-full">
+                <ShimmerButton borderRadius="16px" className={cn("w-full justify-center px-4 py-3 sm:px-6 sm:py-3 rounded-2xl border border-black/5 dark:border-white/10 shadow-lg hover:-translate-y-1 transition-all duration-300 group", className)}>
+                    <div className="flex items-center justify-center gap-1.5">
+                        <span className="whitespace-pre-wrap text-center text-sm font-medium leading-none tracking-tight text-zinc-700 dark:text-zinc-200 group-hover:text-black dark:group-hover:text-white transition-colors">
+                            <LanguageText enText="Download Portofolio" idText="Unduh Portofolio" />
+                        </span>
+                        <ChevronRight className="w-4 h-4 text-zinc-700 dark:text-zinc-200 group-hover:text-black dark:group-hover:text-white transition-transform duration-300 group-hover:translate-x-1" />
+                    </div>
+                </ShimmerButton>
+            </a>
+        ) : (
+            <ShimmerButton onClick={handleAlert} borderRadius="16px" className={cn("w-full justify-center px-4 py-3 sm:px-6 sm:py-3 rounded-2xl border border-black/5 dark:border-white/10 shadow-lg hover:-translate-y-1 transition-all duration-300 group", className)}>
+                <div className="flex items-center justify-center gap-1.5">
+                    <span className="whitespace-pre-wrap text-center text-sm font-medium leading-none tracking-tight text-zinc-700 dark:text-zinc-200 group-hover:text-black dark:group-hover:text-white transition-colors">
+                        <LanguageText enText="Download Portofolio" idText="Unduh Portofolio" />
+                    </span>
+                    <ChevronRight className="w-4 h-4 text-zinc-700 dark:text-zinc-200 group-hover:text-black dark:group-hover:text-white transition-transform duration-300 group-hover:translate-x-1" />
+                </div>
+            </ShimmerButton>
+        )
+    );
+}

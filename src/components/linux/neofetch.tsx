@@ -1,5 +1,5 @@
 import React from "react";
-import { authors } from "@/common/constants";
+import { AuthorData } from "@/common/config/author";
 
 export const NeofetchOutput: React.FC = () => (
     <div className="flex items-start gap-4 sm:gap-6 mt-3 font-mono text-xs sm:text-sm select-none overflow-x-auto whitespace-pre">
@@ -21,8 +21,8 @@ export const NeofetchOutput: React.FC = () => (
             </div>
             <div className="text-zinc-500">--------------------</div>
             <div><span className="text-[#00b0ff] font-semibold">OS</span>: Kali GNU/Linux interactive</div>
-            <div><span className="text-[#00b0ff] font-semibold">Host</span>: Portfolio Terminal v{authors.mainAuthor.version}</div>
-            <div><span className="text-[#00b0ff] font-semibold">React</span>: Version 19.2.4</div>
+            <div><span className="text-[#00b0ff] font-semibold">Host</span>: Portfolio Terminal v{AuthorData.version}</div>
+            <div><span className="text-[#00b0ff] font-semibold">React</span>: Version {React.version.split("-")[0]}</div>
             <div><span className="text-[#00b0ff] font-semibold">Terminal</span>: <span className="text-[#00c875] animate-pulse">● Online SSH (React)</span></div>
             <div className="flex gap-1 pt-2 select-none">
                 <span className="w-4 h-3 bg-black inline-block" />

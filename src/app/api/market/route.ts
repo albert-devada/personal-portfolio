@@ -1,21 +1,14 @@
 import { NextResponse } from "next/server";
-import { authors } from "@/common/constants";
-import { VerifedSession } from "@/lib/server";
-import { BaseMarketItem, NewsArticleItem } from "@/common/types";
-import { fetchCryptoData, fetchStocksData, fetchMarketNewsData } from "@/common/service";
+import { API_CONFIG } from "@/common/config";
+import { ValidateSession, fetchCryptoData, fetchStocksData } from "@/common/service";
+import type { BaseMarketItems } from "@/common/types";
 
 export const dynamic = "force-dynamic";
-
-const API_CONFIG = {
-    version: authors.mainAuthor.version,
-    author: { name: authors.mainAuthor.nickname, github: authors.mainAuthor.github, instagram: authors.mainAuthor.instagram, linkedin: authors.mainAuthor.linkedin },
-};
-
 const getMeta = () => ({ ...API_CONFIG });
 
 export async function GET() {
     try {
-        const clientSession = await VerifedSession();
+        const clientSession = await ValidateSession();
 
         if (!clientSession) {
             return NextResponse.json(
@@ -24,16 +17,14 @@ export async function GET() {
             );
         }
 
-        const [cryptoResult, stocksResult, newsResult] = await Promise.allSettled([
+        const [cryptoResult, stocksResult] = await Promise.allSettled([
             fetchCryptoData(),
             fetchStocksData(),
-            fetchMarketNewsData(),
         ]);
 
-        const cryptoData: BaseMarketItem[] = cryptoResult.status === "fulfilled" && Array.isArray(cryptoResult.value) ? cryptoResult.value : [];
-        const stocksData: BaseMarketItem[] = stocksResult.status === "fulfilled" && Array.isArray(stocksResult.value) ? stocksResult.value : [];
-        const newsData: NewsArticleItem[] = newsResult.status === "fulfilled" && Array.isArray(newsResult.value) ? newsResult.value : [];
-        const allFailed = cryptoData.length === 0 && stocksData.length === 0 && newsData.length === 0;
+        const cryptoData: BaseMarketItems[] = cryptoResult.status === "fulfilled" && Array.isArray(cryptoResult.value) ? cryptoResult.value : [];
+        const stocksData: BaseMarketItems[] = stocksResult.status === "fulfilled" && Array.isArray(stocksResult.value) ? stocksResult.value : [];
+        const allFailed = cryptoData.length === 0 && stocksData.length === 0;
 
         if (allFailed) {
             return NextResponse.json(
@@ -43,7 +34,7 @@ export async function GET() {
         }
 
         return NextResponse.json(
-            { success: true, meta: getMeta(), data: { crypto: cryptoData, stocks: stocksData, sentiment: newsData }, timestamp: new Date().toISOString() },
+            { success: true, meta: getMeta(), data: { crypto: cryptoData, stocks: stocksData }, timestamp: new Date().toISOString() },
             { status: 200 }
         );
 

@@ -1,47 +1,18 @@
 "use client";
 
 import { useLanguage } from "@/language";
-import { getAuthor } from "@/common/constants";
-import React, { useEffect, useState } from "react";
-import { getPersonalProfile } from "@/common/supabase";
+import { AuthorData } from "@/common/config/author";
+import React from "react";
+import type { PersonalProfile } from "@/common/types";
+import { formatOperatorNickname } from "@/function";
 
-
-interface PersonalProfile {
-    full_name?: string;
-    username?: string;
-    location?: string;
-    activity?: string;
-    status_work?: boolean;
-}
-
-const formatUsername = (str?: string) => {
-    if (!str) return "";
-    return str.replace(/^@/, "").replace(/[_-]/g, " ").split(" ").filter(Boolean).map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()).join(" ");
-};
-
-export const WhoamiOutput: React.FC = () => {
+export const WhoamiOutput: React.FC<{ profile?: PersonalProfile | null }> = ({ profile }) => {
     const { lang } = useLanguage();
-    const [profile, setProfile] = useState<PersonalProfile | null>(null);
-    const mainAuthor = getAuthor("mainAuthor");
-    const fullName = profile?.full_name || mainAuthor.name;
-    const nickname = formatUsername(profile?.username || mainAuthor.username);
-    const location = profile?.location || mainAuthor.location;
+    const fullName = profile?.full_name || AuthorData.name;
+    const nickname = formatOperatorNickname(profile?.username || AuthorData.username);
+    const location = profile?.location || AuthorData.location;
     const isWorking = profile?.status_work ?? false;
-    const activity = profile?.activity || mainAuthor.activity;
-
-    useEffect(() => {
-        let isMounted = true;
-
-        getPersonalProfile().then((data) => {
-            if (isMounted && data) {
-                setProfile(data);
-            }
-        });
-
-        return () => {
-            isMounted = false;
-        };
-    }, []);
+    const activity = profile?.activity || AuthorData.activity;
 
     const labels = {
         en: {
@@ -85,7 +56,7 @@ export const WhoamiOutput: React.FC = () => {
                     </div>
                     <div>
                         <span className="text-[#00b0ff]">▸&nbsp;{language.roles}</span>:{" "}
-                        <span className="text-amber-400 font-medium">{mainAuthor.jobTitle}</span>
+                        <span className="text-amber-400 font-medium">{AuthorData.jobTitle}</span>
                     </div>
                     <div>
                         <span className="text-[#00b0ff]">▸&nbsp;{language.location}</span>:

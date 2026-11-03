@@ -1,36 +1,11 @@
 "use client";
 
 import { useLanguage } from "@/language";
-import { getCertificateList } from "@/common/supabase";
+import type { CertificateItem, CertificationRawItem } from "@/common/types";
+import { scrollTerminalToBottom, formatCertificateData } from "@/function";
 import React, { useEffect, useState, useRef } from "react";
 
-type CertificationItem = Record<string, string | number | boolean | null | undefined>;
-
-export interface CertificateItem {
-    id: string;
-    title: string;
-    path: string;
-    url?: string | null;
-    borderColor: string;
-}
-
-export const formatCertificateData = (data: CertificationItem[]): CertificateItem[] => {
-    return (data || []).slice(0, 5).reverse().map((cert, index) => {
-        const title = String(cert.title ?? "");
-        const vendor = String(cert.vendor ?? "");
-        const credential = cert.credential ? String(cert.credential) : "";
-        const url = typeof cert.href_url === "string" ? cert.href_url : null;
-        return {
-            id: String(index + 1),
-            title,
-            path: credential ? `${vendor} (${credential})` : vendor,
-            url,
-            borderColor: "border-zinc-700",
-        };
-    });
-};
-
-export const CertificateMenuOutput: React.FC = () => {
+export const CertificateMenuOutput: React.FC<{ initialData?: CertificationRawItem[] }> = ({ initialData }) => {
     const { lang } = useLanguage();
     const [certificates, setCertificates] = useState<CertificateItem[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -58,29 +33,7 @@ export const CertificateMenuOutput: React.FC = () => {
 
     useEffect(() => {
         if (!isLoading && containerRef.current) {
-            const frameId = requestAnimationFrame(() => {
-                const timer = setTimeout(() => {
-                    let parent = containerRef.current?.parentElement;
-
-                    while (parent) {
-                        const style = window.getComputedStyle(parent);
-                        const isScrollable = style.overflowY === "auto" || style.overflowY === "scroll";
-
-                        if (isScrollable && parent.scrollHeight > parent.clientHeight) {
-                            parent.scrollTo({
-                                top: parent.scrollHeight,
-                                behavior: "smooth",
-                            });
-                            break;
-                        }
-                        parent = parent.parentElement;
-                    }
-                }, 150);
-
-                return () => clearTimeout(timer);
-            });
-
-            return () => cancelAnimationFrame(frameId);
+            return scrollTerminalToBottom(containerRef.current, 150);
         }
     }, [isLoading]);
 
@@ -92,11 +45,9 @@ export const CertificateMenuOutput: React.FC = () => {
                 setIsLoading(true);
                 setIsError(false);
 
-                const [rawData] = await Promise.all([
-                    getCertificateList(),
-                    new Promise((resolve) => setTimeout(resolve, 1200)),
-                ]);
+                await new Promise((resolve) => setTimeout(resolve, 800));
 
+                const rawData = initialData;
                 if (!rawData || rawData.length === 0) {
                     if (isMounted) {
                         setIsError(true);
@@ -124,7 +75,7 @@ export const CertificateMenuOutput: React.FC = () => {
         return () => {
             isMounted = false;
         };
-    }, []);
+    }, [initialData]);
 
     return (
         <div ref={containerRef} className="mt-2 font-mono text-xs sm:text-sm text-[#d1d5db] space-y-1 select-none">
@@ -203,29 +154,7 @@ export const CertificateDetailOutput: React.FC<{ cert: CertificateItem }> = ({ c
 
     useEffect(() => {
         if (!isLoading && containerRef.current) {
-            const frameId = requestAnimationFrame(() => {
-                const timer = setTimeout(() => {
-                    let parent = containerRef.current?.parentElement;
-
-                    while (parent) {
-                        const style = window.getComputedStyle(parent);
-                        const isScrollable = style.overflowY === "auto" || style.overflowY === "scroll";
-
-                        if (isScrollable && parent.scrollHeight > parent.clientHeight) {
-                            parent.scrollTo({
-                                top: parent.scrollHeight,
-                                behavior: "smooth",
-                            });
-                            break;
-                        }
-                        parent = parent.parentElement;
-                    }
-                }, 100);
-
-                return () => clearTimeout(timer);
-            });
-
-            return () => cancelAnimationFrame(frameId);
+            return scrollTerminalToBottom(containerRef.current, 100);
         }
     }, [isLoading]);
 

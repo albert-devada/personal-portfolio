@@ -1,63 +1,50 @@
 import { NextResponse } from "next/server";
-import { authors } from "@/common/constants";
-import { supabase } from "@/common/supabase";
+import { API_CONFIG } from "@/common/config";
+import { CheckDatabaseHealth } from "@/supabase";
+import { CheckModelAIHealth } from "@/common/service";
 
 export const dynamic = "force-dynamic";
-
-const API_CONFIG = {
-    version: authors.mainAuthor.version,
-    author: { name: authors.mainAuthor.nickname, github: authors.mainAuthor.github, instagram: authors.mainAuthor.instagram, linkedin: authors.mainAuthor.linkedin },
-};
-
 const getMeta = () => ({ ...API_CONFIG });
 
-async function checkHealth() {
+async function CheckHealth() {
     const vercelStart = performance.now();
-    let isSupabaseHealthy = false;
-    let supabaseLatency = 0;
 
-    try {
-        const supabaseStart = performance.now();
-        const { error, data } = await supabase.from("personal").select("id").limit(1);
-        const supabaseEnd = performance.now();
-        supabaseLatency = Math.round(supabaseEnd - supabaseStart);
-
-        if (!error && data) {
-            isSupabaseHealthy = true;
-        }
-    } catch {
-        isSupabaseHealthy = false;
-    }
+    const [DatabaseHealth, ModelAIHealth] = await Promise.all([
+        CheckDatabaseHealth(),
+        CheckModelAIHealth(),
+    ]);
 
     const vercelEnd = performance.now();
     const vercelLatency = Math.round(vercelEnd - vercelStart);
+    const isDbHealthy = DatabaseHealth.status === "healthy";
+    const isAllHealthy = isDbHealthy && ModelAIHealth.status === "healthy";
 
     return NextResponse.json(
         {
-            success: isSupabaseHealthy,
+            success: isDbHealthy,
             meta: getMeta(),
             data: {
-                status: isSupabaseHealthy ? "healthy" : "unhealthy",
+                status: isAllHealthy ? "healthy" : "unhealthy",
                 services: {
                     server: { status: "healthy", latency: `${vercelLatency}ms` },
-                    database: { status: isSupabaseHealthy ? "healthy" : "unhealthy", latency: `${supabaseLatency}ms` },
-                    ai_model: { status: "unavailable", latency: `0ms` },
+                    database: DatabaseHealth,
+                    ai_model: ModelAIHealth,
                 },
             },
             timestamp: new Date().toISOString(),
         },
-        { status: isSupabaseHealthy ? 200 : 503 }
+        { status: isDbHealthy ? 200 : 503 }
     );
 }
 
 export async function GET() {
-    return checkHealth();
+    return CheckHealth();
 }
 
 export async function POST() {
-    return checkHealth();
+    return CheckHealth();
 }
 
 export async function HEAD() {
-    return checkHealth();
+    return CheckHealth();
 }

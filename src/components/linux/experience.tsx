@@ -1,20 +1,12 @@
 "use client";
 
 import { useLanguage } from "@/language";
-import { getExperienceList } from "@/common/supabase";
+import type { FormattedExperience, ExperienceRawItem } from "@/common/types";
+import { scrollTerminalToBottom } from "@/function";
+import { formatExperienceDate } from "@/utils";
 import React, { useEffect, useState, useRef } from "react";
 
-type ExperienceItem = Record<string, string | number | boolean | null | undefined>;
-
-export interface FormattedExperience {
-    released: string;
-    title: string;
-    vendor: string;
-    description_en: string;
-    description_id: string;
-}
-
-export const ExperienceOutput: React.FC<{ input: string }> = ({ input }) => {
+export const ExperienceOutput: React.FC<{ input: string; initialData?: ExperienceRawItem[] }> = ({ input, initialData }) => {
     const { lang } = useLanguage();
     const [experiences, setExperiences] = useState<FormattedExperience[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -37,49 +29,9 @@ export const ExperienceOutput: React.FC<{ input: string }> = ({ input }) => {
 
     const language = content[lang as "en" | "id"] || content.en;
 
-    const formatDate = (dateStr: string) => {
-        if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) return dateStr;
-        const months: Record<string, string> = {
-            jan: "01", feb: "02", mar: "03", apr: "04", mei: "05", may: "05", 
-            jun: "06", jul: "07", aug: "08", ags: "08", sep: "09", oct: "10", 
-            okt: "10", nov: "11", dec: "12", des: "12"
-        };
-        const cleanStr = dateStr.toLowerCase().replace(/,/g, "");
-        const parts = cleanStr.split(" ");
-        if (parts.length === 3) {
-            const month = months[parts[0].substring(0, 3)] || "01";
-            const day = parts[1].padStart(2, "0");
-            const year = parts[2];
-            return `${year}-${month}-${day}`;
-        }
-        return dateStr;
-    };
-
     useEffect(() => {
         if (!isLoading && containerRef.current) {
-            const frameId = requestAnimationFrame(() => {
-                const timer = setTimeout(() => {
-                    let parent = containerRef.current?.parentElement;
-
-                    while (parent) {
-                        const style = window.getComputedStyle(parent);
-                        const isScrollable = style.overflowY === "auto" || style.overflowY === "scroll";
-
-                        if (isScrollable && parent.scrollHeight > parent.clientHeight) {
-                            parent.scrollTo({
-                                top: parent.scrollHeight,
-                                behavior: "smooth",
-                            });
-                            break;
-                        }
-                        parent = parent.parentElement;
-                    }
-                }, 100);
-
-                return () => clearTimeout(timer);
-            });
-
-            return () => cancelAnimationFrame(frameId);
+            return scrollTerminalToBottom(containerRef.current, 100);
         }
     }, [isLoading]);
 
@@ -91,11 +43,9 @@ export const ExperienceOutput: React.FC<{ input: string }> = ({ input }) => {
                 setIsLoading(true);
                 setIsError(false);
 
-                const [rawData] = await Promise.all([
-                    getExperienceList(),
-                    new Promise((resolve) => setTimeout(resolve, 800)),
-                ]);
+                await new Promise((resolve) => setTimeout(resolve, 1200));
 
+                const rawData = initialData;
                 if (!rawData || rawData.length === 0) {
                     if (isMounted) {
                         setIsError(true);
@@ -105,7 +55,7 @@ export const ExperienceOutput: React.FC<{ input: string }> = ({ input }) => {
                 }
 
                 if (isMounted) {
-                    const formatted = (rawData as ExperienceItem[]).slice(0, 5).map((item) => ({
+                    const formatted: FormattedExperience[] = (rawData as ExperienceRawItem[]).slice(0, 5).map((item) => ({
                         released: String(item.released ?? ""),
                         title: String(item.title ?? ""),
                         vendor: String(item.vendor ?? ""),
@@ -131,7 +81,7 @@ export const ExperienceOutput: React.FC<{ input: string }> = ({ input }) => {
         return () => {
             isMounted = false;
         };
-    }, []);
+    }, [initialData]);
 
     return (
         <div ref={containerRef} className="mt-2 font-mono text-xs sm:text-sm text-zinc-300 space-y-1 select-text max-w-2xl">
@@ -159,7 +109,7 @@ export const ExperienceOutput: React.FC<{ input: string }> = ({ input }) => {
                             : (item.description_en || item.description_id);
                         return (
                             <div key={index} className="whitespace-pre-line">
-                                <span className="text-zinc-500">[{formatDate(item.released)}]</span>{" "}
+                                <span className="text-zinc-500">[{formatExperienceDate(item.released)}]</span>{" "}
                                 <span className="text-[#00c875] font-medium">[{item.title}]</span>{" "}
                                 <span className="text-white font-semibold">{item.vendor}</span> - {description}
                             </div>

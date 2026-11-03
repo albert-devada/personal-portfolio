@@ -2,151 +2,54 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { SiYoutube } from "react-icons/si";
-import { useState, useEffect } from "react";
-import { getExperienceList } from '@/common/supabase';
+import { useMemo } from "react";
 import { ArrowDown, ArrowUpRight } from "lucide-react";
+import { formatDate } from "@/utils";
+import { getLogoSrc, getLinkIcon } from "@/function";
 import { LanguageText, LanguageBlurFadeText } from "@/language";
-import { GitHubLogoIcon, GlobeIcon } from "@radix-ui/react-icons";
-import { Timeline, TimelineItem, TimelineConnectItem, Badge, BlurFade, BlurFadeText } from "@/components";
+import { Typography } from "@/theme";
+import { BlurFade, BlurFadeText } from "@/components/transition";
+import { Timeline, TimelineItem, TimelineConnectItem, Badge } from "@/components/base";
+import type { ViewPagesProps } from "@/common/types";
 
-function formatReleasedDate(dateString: string, lang: "en" | "id" = "en"): string {
-    if (!dateString) return "";
-    const date = new Date(dateString);
-    if (isNaN(date.getTime())) return dateString;
+export function ProjectExperience({ experiences: propExperiences, isFullPage = false }: ViewPagesProps) {
+    const isLoading = propExperiences === undefined;
 
-    if (lang === "id") {
-        return date.toLocaleDateString("id-ID", {
-            day: "numeric",
-            month: "long",
-            year: "numeric",
-        });
-    }
-
-    return date.toLocaleDateString("en-US", {
-        month: "long",
-        day: "numeric",
-        year: "numeric",
-    });
-}
-
-const getLogoSrc = (src: string | null | undefined): string => {
-    if (!src) return "/experience.jpg";
-
-    if (src.startsWith("http://")) {
-        return src.replace("http://", "https://");
-    }
-    
-    if (src.startsWith("https://") || src.startsWith("/")) {
-        return src;
-    }
-    
-    return `/${src}`;
-};
-
-function ExpLogoImage({ src, alt }: { src: string | null | undefined; alt: string }) {
-    const [imageError, setImageError] = useState(false);
-    const logoSrc = getLogoSrc(src);
-
-    if (imageError) {
-        return (
-            <Image
-                src="/experience.jpg"
-                alt={alt}
-                width={50}
-                height={50}
-                priority
-                className="size-11 md:size-12 bg-card z-10 shrink-0 overflow-hidden p-1 border rounded-full shadow ring-2 ring-border object-contain flex-none transition-all duration-300"
-            />
+    const experiences = useMemo(() => {
+        const rawData = propExperiences ?? [];
+        return [...rawData].sort((a, b) => 
+            new Date(String(b.released || "")).getTime() - new Date(String(a.released || "")).getTime()
         );
-    }
-
-    return (
-        <Image
-            src={logoSrc}
-            alt={alt}
-            width={50}
-            height={50}
-            className="size-11 md:size-12 bg-card z-10 shrink-0 overflow-hidden p-1 border rounded-full shadow ring-2 ring-border object-contain flex-none transition-all duration-300"
-            onError={() => setImageError(true)}
-        />
-    );
-}
-
-function getLinkIcon(title: string) {
-    if (!title) return GlobeIcon;
-    const lowerTitle = title.toLowerCase();
-
-    if (lowerTitle.includes("github")) {
-        return GitHubLogoIcon;
-    }
-
-    if (lowerTitle.includes("youtube")) {
-        return SiYoutube;
-    }
-
-    return GlobeIcon;
-}
-
-type ProjectExperienceItem = Record<string, string | number | boolean | null | undefined>;
-
-interface ProjectExperienceProps {
-    isFullPage?: boolean;
-}
-
-export function ProjectExperience({ isFullPage = false }: ProjectExperienceProps) {
-    const [experiences, setExperiences] = useState<ProjectExperienceItem[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
-
-    useEffect(() => {
-        async function fetchExperiences() {
-            setIsLoading(true);
-            const data = await getExperienceList();
-            
-            if (data && data.length > 0) {
-                const sortedData = [...data].sort((a, b) => 
-                    new Date(b.released).getTime() - new Date(a.released).getTime()
-                );
-                setExperiences(sortedData);
-            } else {
-                setExperiences([]);
-            }
-            setIsLoading(false);
-        }
-
-        fetchExperiences();
-    }, []);
+    }, [propExperiences]);
 
     const displayedExperiences = isFullPage ? experiences : experiences.slice(0, 3);
 
     return (
-        <section 
-            id="experience" 
-            className={`overflow-hidden ${isFullPage ? "" : "mt-10 md:mt-15"}`}>
+        <div className={`overflow-hidden ${isFullPage ? "" : "mt-10 md:mt-15"}`}>
             <div className="flex min-h-0 flex-col gap-y-8 w-full">
                 <div className="flex flex-col gap-y-4 items-center justify-center">
                     {!isFullPage && (
                         <div className="flex items-center w-full justify-center">
                             <div className="flex-1 h-0.5 bg-linear-to-r from-transparent from-5% via-black dark:via-white via-95% to-transparent" />
                             <div className="border border-border bg-background z-10 rounded-xl px-4 py-1">
-                                <span className="text-foreground text-sm font-medium">
+                                <Typography.MonoText className="text-foreground text-sm font-medium">
                                     <LanguageText enText="Experience" idText="Pengalaman" />
-                                </span>
+                                </Typography.MonoText>
                             </div>
                             <div className="flex-1 h-0.5 bg-linear-to-l from-transparent from-5% via-black dark:via-white via-95% to-transparent" />
                         </div>
                     )}
                     <div className="flex flex-col gap-y-3 items-center justify-center text-center">
-                        <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl">
+                        <Typography.CardTitle className="text-3xl font-bold tracking-tighter sm:text-4xl">
                             <LanguageBlurFadeText enText="I like building things" idText="Suka Membuat Sesuatu" delay={0.1} />
-                        </h2>
-                        <div className="text-muted-foreground md:text-lg/relaxed lg:text-base/relaxed xl:text-lg/relaxed text-balance text-center">
+                        </Typography.CardTitle>
+                        <Typography.P className="text-muted-foreground md:text-lg/relaxed lg:text-base/relaxed xl:text-lg/relaxed text-balance text-center">
                             <LanguageBlurFadeText 
                                 enText="In my daily activities, I enjoy developing personal applications, handling freelance projects, and building software for clients." 
                                 idText="Dalam aktivitas sehari-hari, saya senang mengembangkan aplikasi pribadi, menangani proyek freelance, dan membangun perangkat lunak untuk klien." 
                                 delay={0.2} 
                             />
-                        </div>
+                        </Typography.P>
                     </div>
                 </div>
                 {isLoading ? (
@@ -164,9 +67,9 @@ export function ProjectExperience({ isFullPage = false }: ProjectExperienceProps
                         ))}
                     </div>
                 ) : experiences.length === 0 ? (
-                    <div className="p-8 text-center rounded-xl backdrop-blur-xl border border-black/5 dark:border-white/10 bg-black/5 dark:bg-white/5 text-muted-foreground text-sm">
+                    <Typography.MonoText className="p-8 text-center rounded-xl backdrop-blur-xl border border-black/5 dark:border-white/10 bg-black/5 dark:bg-white/5 text-muted-foreground text-sm">
                         <LanguageText enText="Experience is currently unavailable." idText="Pengalaman belum tersedia saat ini." />
-                    </div>
+                    </Typography.MonoText>
                 ) : (
                     <div className="relative w-full">
                         <div 
@@ -187,37 +90,49 @@ export function ProjectExperience({ isFullPage = false }: ProjectExperienceProps
                                             className="w-full flex items-start justify-between gap-10">
                                             <TimelineConnectItem className="flex items-start justify-center">
                                                 <BlurFade delay={baseDelay}>
-                                                    <ExpLogoImage src={typeof exp.logo_url === "string" ? exp.logo_url : null} alt={String(exp.vendor || "Code Logo")} />
+                                                    <Image
+                                                        src={getLogoSrc(typeof exp.logo_url === "string" ? exp.logo_url : null, "/experience.jpg")}
+                                                        alt={String(exp.vendor || "Code Logo")}
+                                                        width={50}
+                                                        height={50}
+                                                        priority
+                                                        className="size-11 md:size-12 bg-card z-10 shrink-0 overflow-hidden p-1 border rounded-full shadow ring-2 ring-border object-contain flex-none transition-all duration-300"
+                                                        onError={(e) => {
+                                                            const target = e.currentTarget;
+                                                            target.srcset = "/experience.jpg";
+                                                            target.src = "/experience.jpg";
+                                                        }}
+                                                    />
                                                 </BlurFade>
                                             </TimelineConnectItem>
                                             <div className="flex flex-1 flex-col justify-start gap-2 min-w-0 pb-6">
                                                 {exp.released && (
                                                     <time className="text-xs text-muted-foreground">
                                                         <LanguageBlurFadeText 
-                                                            enText={formatReleasedDate(String(exp.released), "en")}
-                                                            idText={formatReleasedDate(String(exp.released), "id")}
+                                                            enText={formatDate(String(exp.released), "en")}
+                                                            idText={formatDate(String(exp.released), "id")}
                                                             delay={baseDelay + 0.05} 
                                                         />
                                                     </time>
                                                 )}
                                                 {exp.title && (
-                                                    <h3 className="font-semibold leading-none">
+                                                    <Typography.P className="font-semibold leading-none">
                                                         <BlurFadeText text={String(exp.title)} delay={baseDelay + 0.1} />
-                                                    </h3>
+                                                    </Typography.P>
                                                 )}
                                                 {exp.vendor && (
-                                                    <div className="text-sm text-muted-foreground">
+                                                    <Typography.P className="text-sm text-muted-foreground">
                                                         <BlurFadeText text={String(exp.vendor)} delay={baseDelay + 0.15} />
-                                                    </div>
+                                                    </Typography.P>
                                                 )}
                                                 {(exp.description_en || exp.description_id) && (
-                                                    <div className="text-sm text-muted-foreground leading-relaxed wrap-break-word">
+                                                    <Typography.P className="text-sm text-muted-foreground leading-relaxed wrap-break-word">
                                                         <LanguageBlurFadeText 
                                                             enText={String(exp.description_en || "")} 
                                                             idText={String(exp.description_id || "")} 
                                                             delay={baseDelay + 0.2} 
                                                         />
-                                                    </div>
+                                                    </Typography.P>
                                                 )}
                                                 {linksArray.length > 0 && (
                                                     <div className="mt-1 flex flex-row flex-wrap items-start gap-2">
@@ -228,7 +143,7 @@ export function ProjectExperience({ isFullPage = false }: ProjectExperienceProps
                                                                     href={link.href || "#"}
                                                                     key={idx}
                                                                     target="_blank"
-                                                                    rel="noopener noreferrer">
+                                                                    rel="nofollow noopener noreferrer">
                                                                     <Badge className="flex items-center gap-1.5 text-xs bg-primary text-primary-foreground hover:bg-primary/90 cursor-pointer">
                                                                         {IconComponent && <IconComponent className="size-3.5" />}
                                                                         <span>
@@ -269,6 +184,6 @@ export function ProjectExperience({ isFullPage = false }: ProjectExperienceProps
                     </div>
                 )}
             </div>
-        </section>
+        </div>
     );
 }

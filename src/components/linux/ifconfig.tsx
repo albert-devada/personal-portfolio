@@ -1,5 +1,5 @@
 import React from "react";
-import { GeoLocationData } from "@/lib";
+import type { GeoLocationData } from "@/common/types";
 import { useLanguage } from "@/language";
 
 export const IfconfigOutput: React.FC<{ initialIp: string; geoData?: GeoLocationData | null }> = ({ initialIp, geoData }) => {

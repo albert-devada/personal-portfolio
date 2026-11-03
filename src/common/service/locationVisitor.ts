@@ -1,11 +1,18 @@
 import { cookies, headers } from "next/headers";
-import { GeoLocationData, VisitorDetails } from "@/lib";
+import { Config, resolveIpAddress } from "@/common/config";
+import type { GeoLocationData, VisitorDetails } from "@/common/types";
+
+function formatCustomFlagUrl(data: GeoLocationData): GeoLocationData {
+    if (data?.country_code) {
+        const countryCode = data.country_code.toLowerCase();
+        data.flag = { ...data.flag, img: `https://raw.githubusercontent.com/b4codeid/flagiconsmain/main/${countryCode}.svg`};
+    }
+    return data;
+}
 
 export async function getVisitorDetails(fetchGeo = false): Promise<VisitorDetails> {
     let ipAddress = "127.0.0.1";
-    let GeoLocationData: GeoLocationData | null = null;
-    const isLocal = process.env.NODE_ENV === "development";
-    const devFallbackIp = process.env.DEV_FALLBACK_IP || "8.8.8.8";
+    let geoLocationData: GeoLocationData | null = null;
 
     try {
         const headerList = await headers();
@@ -22,39 +29,51 @@ export async function getVisitorDetails(fetchGeo = false): Promise<VisitorDetail
             ipAddress = xForwardedFor.split(",")[0].trim();
         }
         
-        if (isLocal || ["::1", "127.0.0.1", "::ffff:127.0.0.1"].some(local => ipAddress.includes(local))) {
-            ipAddress = isLocal ? devFallbackIp : "127.0.0.1"; 
-        }
-
+        ipAddress = resolveIpAddress(ipAddress);
         const userAgent = headerList.get("user-agent") || "Unknown User Agent";
 
         if (fetchGeo) {
             const cachedGeoCookie = cookieStore.get("visitor_cache")?.value;
 
             if (cachedGeoCookie) {
-                const parsedCache = JSON.parse(cachedGeoCookie) as GeoLocationData;
-
-                if (parsedCache && parsedCache.ip === ipAddress) {
-                    GeoLocationData = parsedCache;
+                try {
+                    const parsedCache = JSON.parse(cachedGeoCookie) as GeoLocationData;
+                    if (parsedCache && parsedCache.ip === ipAddress) {
+                        geoLocationData = formatCustomFlagUrl(parsedCache);
+                    }
+                } catch (error) {
+                    geoLocationData = null;
+                    const errorMsg = error instanceof Error ? error.message : "Invalid JSON";
+                    console.warn(`[Location Visitor] Invalid "visitor cache" cookie | IP: ${ipAddress} | Detail: ${errorMsg}`);
                 }
             }
 
-            if (!GeoLocationData) {
-                const apiUrl = `${process.env.GEOLOCATION_API_URL || "YOUR_API_URL"}/${ipAddress}`;
+            if (!geoLocationData && Config.Geolocation.ApiUrl) {
+                const cleanApiUrl = Config.Geolocation.ApiUrl.replace(/\/+$/, "");
+                const apiUrl = `${cleanApiUrl}/${ipAddress}`;
                 const response = await fetch(apiUrl, {
                     headers: { Accept: "application/json" },
                     next: { revalidate: 86400 }
                 });
 
                 if (response.ok) {
-                    GeoLocationData = await response.json() as GeoLocationData;
+                    const rawData = (await response.json()) as GeoLocationData;
+                    geoLocationData = formatCustomFlagUrl(rawData);
                 }
             }
         }
 
-        return { ipAddress, userAgent, GeoLocationData };
+        return { 
+            ipAddress, 
+            userAgent, 
+            GeoLocationData: geoLocationData 
+        };
         
     } catch {
-        return { ipAddress, userAgent: "Unknown User Agent", GeoLocationData: null };
+        return { 
+            ipAddress: resolveIpAddress(ipAddress), 
+            userAgent: "Unknown User Agent", 
+            GeoLocationData: null 
+        };
     }
 }

@@ -1,20 +1,13 @@
 import { NextResponse } from "next/server";
-import { authors } from "@/common/constants";
-import { VerifedSession } from "@/lib/server";
-import { fetchCVEData } from "@/common/service";
+import { API_CONFIG } from "@/common/config";
+import { ValidateSession, fetchCVEData } from "@/common/service";
 
 export const dynamic = "force-dynamic";
-
-const API_CONFIG = {
-    version: authors.mainAuthor.version,
-    author: { name: authors.mainAuthor.nickname, github: authors.mainAuthor.github, instagram: authors.mainAuthor.instagram, linkedin: authors.mainAuthor.linkedin },
-};
-
 const getMeta = () => ({ ...API_CONFIG });
 
 export async function GET() {
     try {
-        const clientSession = await VerifedSession();
+        const clientSession = await ValidateSession();
 
         if (!clientSession) {
             return NextResponse.json(
