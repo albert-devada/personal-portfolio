@@ -1,24 +1,21 @@
 import "server-only";
 
+import { unstable_cache } from "next/cache";
 import { getPersonalProfile, getWorkingList, getExperienceList, getEducationList, getCertificateList } from "@/supabase";
 import { formatEducationPeriod } from "@/utils/date";
 import { AuthorData } from "@/common/config/author";
 import type { ChatHistoryContext } from "@/common/types";
 
-const GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent";
-const GEMINI_MODEL_METADATA_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite";
+const DEFAULT_MODELS = [
+    process.env.GEMINI_MODEL,
+    "gemini-3.5-flash-lite",
+    "gemini-3.1-flash-lite",
+    "gemini-3.8-flash",
+].filter(Boolean) as string[];
+
 const apiKey = process.env.GEMINI_API_KEY;
-const KNOWLEDGE_CACHE_TTL_MS = 30 * 60 * 1000;
-let cachedKnowledgeText: string | null = null;
-let lastKnowledgeFetchTime = 0;
 
-async function BuildPortfolioKnowledge(): Promise<string> {
-    const now = Date.now();
-
-    if (cachedKnowledgeText && now - lastKnowledgeFetchTime < KNOWLEDGE_CACHE_TTL_MS) {
-        return cachedKnowledgeText;
-    }
-
+async function fetchRawPortfolioKnowledge(): Promise<string> {
     try {
         const [profile, workings, experiences, education, certificates] = await Promise.all([
             getPersonalProfile(),
@@ -108,29 +105,29 @@ async function BuildPortfolioKnowledge(): Promise<string> {
             - Website portofolio ini adalah proyek publik (open-source) yang dikembangkan oleh Albert Devada.
             - Repositori resmi proyek: https://github.com/albert-devada/personal-portfolio
             - Seluruh variabel lingkungan (.env), kunci API, dan kredensial server diisolasi ketat demi integritas keamanan sistem.`);
-        cachedKnowledgeText = sections.join("\n\n");
-        lastKnowledgeFetchTime = now;
-        return cachedKnowledgeText;
 
+        return sections.join("\n\n");
     } catch (err) {
         console.error(`[Assistant AI: Supabase Error Context] Failed to build portfolio knowledge: ${err instanceof Error ? err.message : String(err)}`);
-        return cachedKnowledgeText || "Albert Devada (Naufal Burhanuddin Yusuf) adalah seorang Security Researcher dan Software Engineer yang aktif dalam riset Bug Bounty, Application Security, serta pengembangan aplikasi web dan otomatisasi sistem.";
+        return "Albert Devada (Naufal Burhanuddin Yusuf) adalah seorang Security Researcher dan Software Engineer yang aktif dalam riset Bug Bounty, Application Security, serta pengembangan aplikasi web dan otomatisasi sistem.";
     }
 }
 
-export async function GenerateAssistantReply(userMessage: string, history: ChatHistoryContext[] = [], lang: "en" | "id" = "id"): Promise<string> {
-    const isEn = lang === "en";
-    const trimmedQuery = (userMessage || "").trim();
+/**
+ * Cached portfolio knowledge to eliminate database round-trips during chat requests.
+ */
+const getCachedPortfolioKnowledge = unstable_cache(async () => fetchRawPortfolioKnowledge(), ["portfolio_knowledge_cache"], { revalidate: 3600 });
 
-    if (!apiKey) {
-        console.error("[Assistant AI: Missing API KEY Context] Missing GEMINI_API_KEY in environment variables.");
-        return isEn ? "Sorry, the AI assistant is currently unavailable. Please try again later or contact Albert directly via LinkedIn or Instagram." : "Maaf, asisten AI sedang tidak dapat dihubungi. Silakan coba lagi nanti atau hubungi Albert langsung melalui LinkedIn atau Instagram.";
+async function BuildPortfolioKnowledge(): Promise<string> {
+
+    try {
+        return await getCachedPortfolioKnowledge();
+    } catch {
+        return await fetchRawPortfolioKnowledge();
     }
+}
 
-    if (!trimmedQuery) {
-        return isEn ? "Hello! How can I assist you regarding Albert Devada's profile, skills, or projects?" : "Halo! Ada yang bisa saya bantu terkait profil, keahlian, atau proyek Albert Devada?";
-    }
-
+async function buildGeminiPayload(trimmedQuery: string, history: ChatHistoryContext[]) {
     const knowledge = await BuildPortfolioKnowledge();
 
     const systemInstruction = {
@@ -188,56 +185,80 @@ export async function GenerateAssistantReply(userMessage: string, history: ChatH
         parts: [{ text: trimmedQuery }],
     });
 
-    try {
-        const response = await fetch(`${GEMINI_API_URL}?key=${apiKey}`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                systemInstruction,
-                contents,
-                generationConfig: {
-                    maxOutputTokens: 450,
-                    temperature: 0.5,
-                },
-            }),
-            cache: "no-store",
-        });
+    return { systemInstruction, contents };
+}
 
-        if (!response.ok) {
+export async function GenerateAssistantReply(userMessage: string, history: ChatHistoryContext[] = [], lang: "en" | "id" = "id"): Promise<string> {
+    const isEn = lang === "en";
+    const trimmedQuery = (userMessage || "").trim();
+
+    if (!apiKey) {
+        console.error("[Assistant AI: Missing API KEY Context] Missing GEMINI_API_KEY in environment variables.");
+        return isEn ? "Sorry, the AI assistant is currently unavailable. Please try again later or contact Albert directly via LinkedIn or Instagram." : "Maaf, asisten AI sedang tidak dapat dihubungi. Silakan coba lagi nanti atau hubungi Albert langsung melalui LinkedIn atau Instagram.";
+    }
+
+    if (!trimmedQuery) {
+        return isEn ? "Hello! How can I assist you regarding Albert Devada's profile, skills, or projects?" : "Halo! Ada yang bisa saya bantu terkait profil, keahlian, atau proyek Albert Devada?";
+    }
+
+    const { systemInstruction, contents } = await buildGeminiPayload(trimmedQuery, history);
+
+    let lastErrorStatus = 500;
+
+    for (const model of DEFAULT_MODELS) {
+        const generateUrl = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+        try {
+            const response = await fetch(generateUrl, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    systemInstruction,
+                    contents,
+                    generationConfig: {
+                        maxOutputTokens: 450,
+                        temperature: 0.5,
+                    },
+                }),
+                cache: "no-store",
+                signal: AbortSignal.timeout(6000),
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                const candidate = data?.candidates?.[0];
+                const replyText = candidate?.content?.parts?.[0]?.text;
+
+                if (replyText && typeof replyText === "string") {
+                    return replyText.trim();
+                }
+            }
+
+            lastErrorStatus = response.status;
             const rawError = await response.text().catch(() => "");
             let detail = "";
-
             try {
                 detail = JSON.parse(rawError)?.error?.message || "";
             } catch {
                 detail = rawError.slice(0, 100);
             }
-            
-            console.error(`[Assistant AI: Gemini Error] Status ${response.status}${detail ? `: ${detail.replace(/\s+/g, " ").trim()}` : ""}`);
+            console.warn(`[Assistant AI: Model ${model} returned ${response.status}] ${detail ? detail.replace(/\s+/g, " ").trim() : ""}`);
 
-            if (response.status === 429) {
-                return isEn ? "Temporary chat quota limit reached. Please try again in a moment." : "Batas kuota obrolan sementara telah tercapai. Silakan coba beberapa saat lagi.";
-            }
-
-            return isEn ? "Sorry, an issue occurred while reaching the AI assistant. Please try again later or contact Albert directly via LinkedIn or Instagram." : "Maaf, terjadi kendala saat menghubungi asisten AI. Silakan coba lagi nanti atau hubungi Albert langsung melalui LinkedIn atau Instagram.";
+        } catch (fetchErr) {
+            console.warn(`[Assistant AI: Model ${model} failed] ${fetchErr instanceof Error ? fetchErr.message : String(fetchErr)}`);
         }
-
-        const data = await response.json();
-        const candidate = data?.candidates?.[0];
-        const replyText = candidate?.content?.parts?.[0]?.text;
-
-        if (replyText && typeof replyText === "string") {
-            return replyText.trim();
-        }
-
-        return isEn ? "Hello! How can I assist you regarding Albert Devada's experience or projects?" : "Halo! Ada yang bisa saya bantu terkait pengalaman atau proyek Albert Devada?";
-
-    } catch (error) {
-        console.error(`[Assistant AI: Network Error] ${error instanceof Error ? error.message : String(error)}`);
-        return isEn ? "Sorry, a network connection error occurred. Please check your connection and try again." : "Maaf, terjadi kesalahan koneksi jaringan. Silakan periksa koneksi Anda dan coba lagi.";
     }
+
+    if (lastErrorStatus === 429) {
+        return isEn ? "Temporary chat quota limit reached. Please try again in a moment." : "Batas kuota obrolan sementara telah tercapai. Silakan coba beberapa saat lagi.";
+    }
+
+    if (lastErrorStatus === 503) {
+        return isEn ? "The AI service is experiencing high temporary demand. Please try again in a moment." : "Layanan AI sedang mengalami lonjakan lalu lintas yang tinggi. Silakan coba beberapa saat lagi.";
+    }
+
+    return isEn ? "Sorry, an issue occurred while reaching the AI assistant. Please try again later or contact Albert directly via LinkedIn or Instagram." : "Maaf, terjadi kendala saat menghubungi asisten AI. Silakan coba lagi nanti atau hubungi Albert langsung melalui LinkedIn atau Instagram.";
 }
 
 /**
@@ -251,32 +272,31 @@ export async function CheckModelAIHealth(): Promise<{ status: "healthy" | "unhea
         return { status: "unhealthy", latency: "0ms" };
     }
 
-    try {
-        const response = await fetch(`${GEMINI_MODEL_METADATA_URL}?key=${apiKey}`, {
-            method: "GET",
-            cache: "no-store",
-            signal: AbortSignal.timeout(5000),
-        });
+    for (const model of DEFAULT_MODELS) {
+        try {
+            const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}?key=${apiKey}`, {
+                method: "GET",
+                cache: "no-store",
+                signal: AbortSignal.timeout(3000),
+            });
 
-        const latency = Math.round(performance.now() - start);
+            if (response.ok) {
+                const latency = Math.round(performance.now() - start);
+                return {
+                    status: "healthy",
+                    latency: `${latency}ms`,
+                };
+            }
 
-        if (response.ok) {
-            return {
-                status: "healthy",
-                latency: `${latency}ms`,
-            };
+        } catch (pingErr) {
+            console.warn(`[Health Check: Ping to ${model} failed/timed out] ${pingErr instanceof Error ? pingErr.message : String(pingErr)}`);
+            continue;
         }
-
-        return {
-            status: "unhealthy",
-            latency: `${latency}ms`,
-        };
-
-    } catch {
-        const latency = Math.round(performance.now() - start);
-        return {
-            status: "unhealthy",
-            latency: `${latency}ms`,
-        };
     }
+
+    const latency = Math.round(performance.now() - start);
+    return {
+        status: "unhealthy",
+        latency: `${latency}ms`,
+    };
 }

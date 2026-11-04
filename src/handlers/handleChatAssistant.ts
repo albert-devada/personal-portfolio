@@ -19,4 +19,3 @@ export async function HandleChatAssistant(userMessage: string, history: ChatHist
 
     return await GenerateAssistantReply(userMessage, history, lang);
 }
-
