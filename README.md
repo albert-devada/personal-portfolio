@@ -159,7 +159,7 @@ Create a `.env` file in the root directory:
 
 ```env
 # APPLICATION CONFIGURATION
-APP_KEY="your-secret-app-key-here"
+NEXT_PUBLIC_APP_NAME="your-secret-app-key-here"
 NEXT_PUBLIC_WEB_URL="https://your_app_domain.com"
 NEXT_PUBLIC_API_URL="https://your_subdomain.com"
 

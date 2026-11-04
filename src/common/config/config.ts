@@ -1,7 +1,7 @@
 import "server-only";
 
 const isDev = process.env.NODE_ENV === "development";
-const appName = process.env.APP_NAME || "Portfolio";
+const appName = process.env.NEXT_PUBLIC_APP_NAME || "Portfolio";
 const appKeys = process.env.APP_KEYS || "";
 const rawWebUrl = process.env.NEXT_PUBLIC_WEB_URL || "http://localhost:3000";
 const rawApiUrl = process.env.NEXT_PUBLIC_API_URL || "http://api.localhost:3000";
