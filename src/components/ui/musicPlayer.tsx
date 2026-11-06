@@ -23,8 +23,8 @@ export const MusicPlayer = ({ className }: MusicPlayerProps) => {
         <div
             className={`
                 flex items-center p-2.5 rounded-2xl backdrop-blur-xl
-                border border-black/5 dark:border-white/10
-                shadow-[0_8px_30px_rgba(0,0,0,0.08)] dark:shadow-[0_8px_30px_rgba(0,0,0,0.4)]
+                border border-black/10 dark:border-white/15
+                shadow-[0_8px_30px_rgba(0,0,0,0.12)] dark:shadow-[0_8px_30px_rgba(0,0,0,0.5)]
                 transition-all duration-300 overflow-hidden shrink-0 ${className || ""}`
             }>
             <div className="w-11 h-11 rounded-[10px] bg-linear-to-tr from-zinc-200 to-zinc-100 dark:from-zinc-800 dark:to-zinc-700 flex items-center justify-center shrink-0 overflow-hidden relative shadow-inner">
@@ -43,7 +43,7 @@ export const MusicPlayer = ({ className }: MusicPlayerProps) => {
             </div>
             <div className="ml-3 flex-1 min-w-0 flex flex-col justify-center">
                 <div className="w-full overflow-hidden relative">
-                    <Typography.P className="animate-marquee text-[14px] font-bold text-black dark:text-white leading-tight font-sans whitespace-nowrap">
+                    <Typography.P className="animate-marquee text-[14px] font-bold text-zinc-900 dark:text-white leading-tight font-sans whitespace-nowrap">
                         {currentTrack ? (
                             <>
                                 {currentTrack.artist.toLowerCase()} - {currentTrack.title.toLowerCase()}
@@ -56,21 +56,21 @@ export const MusicPlayer = ({ className }: MusicPlayerProps) => {
                         )}
                     </Typography.P>
                 </div>
-                <Typography.P className="text-[12px] font-medium text-zinc-800 dark:text-zinc-400 truncate leading-tight font-sans mt-0.5">
+                <Typography.P className="text-[12px] font-medium text-zinc-600 dark:text-zinc-300 truncate leading-tight font-sans mt-0.5">
                     {formatTime(currentTime)} / {formatTime(duration)}
                 </Typography.P>
             </div>
-            <div className="flex items-center space-x-8 md:space-x-3 mr-2 ml-3 shrink-0 text-black dark:text-white">
+            <div className="flex items-center space-x-8 md:space-x-3 mr-2 ml-3 shrink-0 text-zinc-900 dark:text-white">
                 <button
                     onClick={playPrevTrack}
                     title="Previous"
-                    className="opacity-60 hover:opacity-100 transition-opacity cursor-pointer">
+                    className="opacity-80 hover:opacity-100 transition-opacity cursor-pointer">
                     <SkipBack size={20} className="fill-current" />
                 </button>
                 <button
                     onClick={toggleGlobalPlay}
                     title={isPlaying ? "Pause" : "Play"}
-                    className="opacity-90 hover:opacity-100 transition-opacity transform active:scale-95 cursor-pointer">
+                    className="opacity-100 hover:opacity-90 transition-opacity transform active:scale-95 cursor-pointer">
                     {isPlaying ? (
                         <Pause size={20} className="fill-current" />
                     ) : (
@@ -80,12 +80,10 @@ export const MusicPlayer = ({ className }: MusicPlayerProps) => {
                 <button
                     onClick={playNextTrack}
                     title="Next"
-                    className="opacity-60 hover:opacity-100 transition-opacity cursor-pointer">
+                    className="opacity-80 hover:opacity-100 transition-opacity cursor-pointer">
                     <SkipForward size={20} className="fill-current" />
                 </button>
             </div>
         </div>
     );
 };
-
-export { startGlobalPlay } from "@/common/music";
